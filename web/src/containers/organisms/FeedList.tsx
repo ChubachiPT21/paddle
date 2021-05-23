@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { IFeed, ISource } from 'src/type'
 import Feed from 'src/containers/organisms/Feed'
 import { useSelector } from 'react-redux'
+import SourceHeading from 'src/components/atoms/SourceHeading'
 
 const FeedList: FC = () => {
   const sources = useSelector(
@@ -10,21 +11,17 @@ const FeedList: FC = () => {
   const feeds = useSelector(
     (state: { feed: { feeds: IFeed[] } }) => state.feed.feeds
   )
-  const findSource = (sourceId: number) =>
-    sources.find((s) => s.id === sourceId)
-
+  const uniqueSourceId = Array.from(new Set(feeds.map((feed) => feed.sourceId)))
+  const source = sources.find((s) => s.id === uniqueSourceId[0])
   return (
     <div className="feedList">
-      <div className="feedList__title">
-        <span>ALL FEEDS</span>
-      </div>
-
+      <SourceHeading source={source} />
       {sources && (
         <div className="feedList__body">
           {feeds.map((feed, i) => (
             <Feed
               key={feed.id}
-              source={findSource(feed.sourceId)}
+              source={source}
               feed={feed}
               hasVisited={i !== 0}
             />
