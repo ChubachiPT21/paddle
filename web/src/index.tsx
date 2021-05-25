@@ -19,8 +19,9 @@ ReactDOM.render(
     <React.StrictMode>
       <Router>
         <Switch>
-          <Route exact path="/" component={FeedsPage} />
+          <Route exact path="/sources/:id/feeds" component={FeedsPage} />
           <Route exact path="/explore" component={ExplorePage} />
+          <Route exact path="/" component={FeedsPage} />
           <Route
             exact
             path="/signin"

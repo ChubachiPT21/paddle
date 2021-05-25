@@ -4,15 +4,18 @@ import Feed from 'src/containers/organisms/Feed'
 import { useSelector } from 'react-redux'
 import SourceHeading from 'src/components/atoms/SourceHeading'
 
-const FeedList: FC = () => {
+type Props = {
+  id: string
+}
+
+const FeedList: FC<Props> = ({ id }) => {
   const sources = useSelector(
     (state: { source: { sources: ISource[] } }) => state.source.sources
   )
   const feeds = useSelector(
     (state: { feed: { feeds: IFeed[] } }) => state.feed.feeds
   )
-  const uniqueSourceId = Array.from(new Set(feeds.map((feed) => feed.sourceId)))
-  const source = sources.find((s) => s.id === uniqueSourceId[0])
+  const source = sources.find((s) => s.id === Number(id))
   return (
     <div className="feedList">
       <SourceHeading source={source} />

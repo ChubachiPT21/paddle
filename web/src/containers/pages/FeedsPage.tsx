@@ -5,6 +5,7 @@ import { HeaderNavigation } from 'src/components/molecules/Header'
 import { fetchSources } from 'src/actions/sourceActions'
 import DefaultTemplate from 'src/containers/templates/DefaultTemplate'
 import FeedTemplate from 'src/containers/templates/FeedTemplate'
+import { useParams } from 'react-router-dom'
 
 const FeedsPage: FC = () => {
   const dispatch = useDispatch()
@@ -16,10 +17,12 @@ const FeedsPage: FC = () => {
     asyncFunc()
   }, [])
 
+  const { id } = useParams<Record<string, string>>()
+
   return (
     <DefaultTemplate defaultNavigation={HeaderNavigation.home}>
       <FeedTemplate>
-        <FeedList />
+        <FeedList id={id} />
       </FeedTemplate>
     </DefaultTemplate>
   )
