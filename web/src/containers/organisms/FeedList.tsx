@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import SourceHeading from 'src/components/atoms/SourceHeading'
 
 type Props = {
-  sourceId: string
+  sourceId: number
 }
 
 const FeedList: FC<Props> = ({ sourceId }) => {
@@ -15,7 +15,7 @@ const FeedList: FC<Props> = ({ sourceId }) => {
   const feeds = useSelector(
     (state: { feed: { feeds: IFeed[] } }) => state.feed.feeds
   )
-  const source = sources.find((s) => s.id === Number(sourceId))
+  const source = sources.find((s) => s.id === sourceId)
   return (
     <div className="feedList">
       <SourceHeading source={source} />

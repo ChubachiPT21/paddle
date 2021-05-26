@@ -22,7 +22,7 @@ const FeedsPage: FC = () => {
   return (
     <DefaultTemplate defaultNavigation={HeaderNavigation.home}>
       <FeedTemplate>
-        <FeedList sourceId={id} />
+        <FeedList sourceId={Number(id)} />
       </FeedTemplate>
     </DefaultTemplate>
   )
