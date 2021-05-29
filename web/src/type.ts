@@ -13,9 +13,14 @@ export type IFeed = {
   imageUrl: string
 }
 
-export type IUser = {
+export type IAuthentication = {
   email: string
   password: string
+}
+
+export type IUser = {
+  email: string
+  token: string
 }
 
 export enum FeedActionTypes {
@@ -30,8 +35,8 @@ export enum SourceActionTypes {
   FETCH_SOURCES_ERROR = '@@sources/FETCH_SOURCES_ERROR',
 }
 
-export enum SignActionTypes {
-  SIGN_IN_START = '@@sign/SIGN_IN_START',
-  SIGN_IN_SUCCESS = '@@sign/SIGN_IN_SUCCESS',
-  SIGN_IN_ERROR = '@@sign/SIGN_IN_ERROR',
+export enum AuthenticationActionTypes {
+  AUTHENTICATION_START = '@@sign/AUTHENTICATION_START',
+  AUTHENTICATION_SUCCESS = '@@sign/AUTHENTICATION_SUCCESS',
+  AUTHENTICATION_ERROR = '@@sign/AUTHENTICATION_ERROR',
 }

@@ -2,8 +2,8 @@ import React, { FC, useState, ChangeEvent } from 'react'
 import { useDispatch } from 'react-redux'
 import Input from 'src/components/atoms/Input'
 import PrimaryButton from 'src/components/atoms/PrimaryButton'
-import { signIn } from 'src/actions/signInActions'
-import { IUser } from 'src/type'
+import { signIn, signUp } from 'src/actions/authenticationActions'
+import { IAuthentication } from 'src/type'
 import { AuthType } from 'src/containers/pages/AuthenticationPage'
 
 type Props = {
@@ -15,12 +15,12 @@ const AuthenticationForm: FC<Props> = ({ authType }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const onClick = () => {
-    const user: IUser = {
+    const user: IAuthentication = {
       email,
       password,
     }
     if (authType === AuthType.SIGNIN) dispatch(signIn(user))
-    if (authType === AuthType.SIGNUP) dispatch(signIn(user))
+    if (authType === AuthType.SIGNUP) dispatch(signUp(user))
   }
 
   const title = authType === AuthType.SIGNIN ? 'Sign In' : 'Sign Up'

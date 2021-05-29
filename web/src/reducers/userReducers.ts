@@ -1,5 +1,5 @@
-import { SignActionTypes, IUser } from 'src/type'
-import { SignInAction } from 'src/actions/signInActions'
+import { AuthenticationActionTypes, IUser } from 'src/type'
+import { AuthenticationAction } from 'src/actions/authenticationActions'
 
 export interface IUserState {
   error: boolean
@@ -10,25 +10,25 @@ const initialState: IUserState = {
   error: false,
   user: {
     email: '',
-    password: '',
+    token: '',
   },
 }
 
 const reducer = (
   state: IUserState = initialState,
-  action: SignInAction
+  action: AuthenticationAction
 ): IUserState => {
   switch (action.type) {
-    case SignActionTypes.SIGN_IN_START:
+    case AuthenticationActionTypes.AUTHENTICATION_START:
       return {
         ...state,
       }
-    case SignActionTypes.SIGN_IN_SUCCESS:
+    case AuthenticationActionTypes.AUTHENTICATION_SUCCESS:
       return {
         ...state,
         user: action.payload.user,
       }
-    case SignActionTypes.SIGN_IN_ERROR:
+    case AuthenticationActionTypes.AUTHENTICATION_ERROR:
       return {
         ...state,
         error: true,

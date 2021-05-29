@@ -2,12 +2,12 @@ import { combineReducers } from 'redux'
 
 import feed from './feedReducers'
 import source from './sourceReducers'
-import signIn from './signInReducers'
+import user from './userReducers'
 
 const reducers = combineReducers({
   feed,
   source,
-  signIn,
+  user,
 })
 
 export default reducers
