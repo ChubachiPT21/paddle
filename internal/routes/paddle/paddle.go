@@ -10,7 +10,6 @@ import (
 	"github.com/mmcdole/gofeed"
 	"github.com/otiai10/opengraph"
 
-	"github.com/ChubachiPT21/paddle/internal/infrastructure/repository"
 	"github.com/ChubachiPT21/paddle/internal/models"
 	"github.com/ChubachiPT21/paddle/internal/usecase"
 	"github.com/ChubachiPT21/paddle/pkg/orm"
@@ -33,6 +32,7 @@ type createFeedsHandler struct {
 }
 
 type createInterestHandler struct {
+	repo models.InterestRepository
 }
 
 type previewRequest struct {
@@ -139,7 +139,7 @@ func (*createFeedsHandler) receive(c *gin.Context) {
 	}
 }
 
-func (*createInterestHandler) receive(c *gin.Context) {
+func (h *createInterestHandler) receive(c *gin.Context) {
 	feedID, err := strconv.ParseInt(c.Param("feed_id"), 10, 64)
 	if err != nil {
 		fmt.Println(err)
@@ -147,8 +147,7 @@ func (*createInterestHandler) receive(c *gin.Context) {
 		return
 	}
 
-	interestRepo := repository.NewInterestRepository()
-	if err = interestRepo.Create(feedID); err != nil {
+	if err = h.repo.Create(feedID); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
 	} else {
@@ -222,8 +221,8 @@ func CreateFeeds() routes.Routes {
 }
 
 // CreateInterest creates a association with the feed user opens the link
-func CreateInterest() routes.Routes {
-	handler := new(createInterestHandler)
+func CreateInterest(repo models.InterestRepository) routes.Routes {
+	handler := createInterestHandler{repo}
 
 	return routes.Routes{
 		{
