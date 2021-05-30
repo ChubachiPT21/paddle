@@ -1,13 +1,14 @@
 import React, { FC } from 'react'
+import { IUser } from 'src/type'
 
 type Props = {
-  email: string | null
+  user: IUser
 }
 
-const HeaderRightMenu: FC<Props> = ({ email }) => (
+const HeaderRightMenu: FC<Props> = ({ user }) => (
   <div className="rightMenu">
-    {email && <span>Welcome! {email}</span>}
-    {!email && (
+    {user.token && <span>Welcome! {user.email}</span>}
+    {!user.token && (
       <>
         <a href="/signin" className="rightMenu__item">
           Sign In
