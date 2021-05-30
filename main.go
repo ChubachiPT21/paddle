@@ -10,9 +10,9 @@ import (
 	"github.com/ChubachiPT21/paddle/internal/infrastructure/database"
 	"github.com/ChubachiPT21/paddle/internal/infrastructure/repository"
 	"github.com/ChubachiPT21/paddle/internal/routes/paddle"
+	"github.com/ChubachiPT21/paddle/internal/usecase"
 	"github.com/ChubachiPT21/paddle/pkg/routes"
 	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/joho/godotenv"
 )
 
 func main() {
@@ -43,11 +43,11 @@ func main() {
 	)
 	routes.AddRoutes(
 		v1,
-		paddle.CreateFeeds()...,
+		paddle.CreateFeeds(usecase.NewCreateFeedStruct())...,
 	)
 	routes.AddRoutes(
 		v1,
-		paddle.CreateInterest()...,
+		paddle.CreateInterest(repository.NewInterestRepository())...,
 	)
 	routes.AddRoutes(
 		v1,
