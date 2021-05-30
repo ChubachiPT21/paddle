@@ -11,7 +11,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 
-
+	"github.com/ChubachiPT21/paddle/internal/usecase"
 )
 
 func main() {
@@ -39,7 +39,7 @@ func main() {
 	)
 	routes.AddRoutes(
 		v1,
-		paddle.CreateFeeds()...,
+		paddle.CreateFeeds(usecase.NewCreateFeedStruct())...,
 	)
 	routes.AddRoutes(
 		v1,
