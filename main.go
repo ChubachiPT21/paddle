@@ -10,6 +10,7 @@ import (
 	"github.com/ChubachiPT21/paddle/pkg/routes"
 	_ "github.com/go-sql-driver/mysql"
 
+
 	"github.com/ChubachiPT21/paddle/internal/usecase"
 )
 
@@ -42,7 +43,7 @@ func main() {
 	)
 	routes.AddRoutes(
 		v1,
-		paddle.CreateInterest()...,
+		paddle.CreateInterest(repository.NewInterestRepository())...,
 	)
 
 	r.Run(":10330") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

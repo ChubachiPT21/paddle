@@ -79,6 +79,28 @@ func TestCreateSourceHandler_receive(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
 	})
 }
+func TestCreateInterestHandler_receive(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mock := models.NewMockInterestRepository(ctrl)
+	mock.EXPECT().Create(gomock.Any()).DoAndReturn(func(_ int64) error {
+		return nil
+	})
+
+	t.Run("return 200", func(t *testing.T) {
+		routeStruct := paddle.CreateInterest(mock)[0]
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+		c.Params = gin.Params{gin.Param{Key: "feed_id", Value: "1"}}
+
+		body := strings.NewReader("") 
+		c.Request, _ = http.NewRequest("POST", "/sources/:id/feeds/:feed_id/interest", body)
+		c.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded") 
+		routeStruct.Handler(c)
+		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
+	})
+}
 
 func TestCreateFeedsHandler_receive(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -90,6 +112,7 @@ func TestCreateFeedsHandler_receive(t *testing.T) {
 	})
 
 	t.Run("return 200", func(t *testing.T) {
+
 		routeStruct := paddle.CreateFeeds(mock)[0]
 
 		w := httptest.NewRecorder()
