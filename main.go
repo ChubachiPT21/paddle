@@ -10,12 +10,6 @@ import (
 	"github.com/ChubachiPT21/paddle/pkg/routes"
 	_ "github.com/go-sql-driver/mysql"
 
-
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
-	"github.com/ChubachiPT21/paddle/user"
-	"golang.org/x/crypto/bcrypt"
-
 )
 
 func main() {
