@@ -1,4 +1,4 @@
-import { IAuthentication } from '../type'
+import { IAuthentication, IUser } from '../type'
 import axios from '../http/axios'
 
 const authenticationRequest = {
@@ -13,6 +13,9 @@ const authenticationRequest = {
       email: user.email,
       password: user.password,
     })
+  },
+  getAuthentication: () => {
+    return axios.get<IUser>(`/v1/authentication`)
   },
 }
 

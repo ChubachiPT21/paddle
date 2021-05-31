@@ -53,6 +53,10 @@ func main() {
 		v1,
 		paddle.Signup(repository.NewUserRepository())...,
 	)
+	routes.AddRoutes(
+		v1,
+		paddle.GetAuthentication(repository.NewUserRepository())...,
+	)
 	r.Run(":10330") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 

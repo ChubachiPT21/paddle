@@ -66,6 +66,24 @@ export const signIn = (authenticationInput: IAuthentication) => {
   }
 }
 
+export const getAuthentication = () => {
+  return (dispatch: Dispatch) => {
+    dispatch(authenticationStart())
+    return authenticationRequest
+      .getAuthentication()
+      .then((res) => {
+        if (res.data) {
+          dispatch(authenticationSuccess(res.data))
+        } else {
+          dispatch(authenticationError(new Error()))
+        }
+      })
+      .catch((error) => {
+        dispatch(authenticationError(error))
+      })
+  }
+}
+
 export type AuthenticationAction =
   | IAuthenticationAction
   | IAuthenticationSuccess

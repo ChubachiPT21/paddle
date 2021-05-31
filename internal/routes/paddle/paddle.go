@@ -45,6 +45,10 @@ type signupHandler struct {
 	repo models.UserRepository
 }
 
+type getAuthenticationHandler struct {
+	repo models.UserRepository
+}
+
 type previewRequest struct {
 	Url string `json:"url"`
 }
@@ -52,6 +56,22 @@ type previewRequest struct {
 type authenticationRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+func (h *getAuthenticationHandler) handle(c *gin.Context) {
+	session := sessions.Default(c)
+	v := session.Get("token")
+	if v == nil {
+		c.JSON(http.StatusOK, nil)
+		return
+	}
+
+	user, err := h.repo.FindByToken(v.(string))
+	if err != nil || user == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+	} else {
+		c.JSON(http.StatusOK, gin.H{"token": v, "email": user.Email})
+	}
 }
 
 func (h *signupHandler) receive(c *gin.Context) {
@@ -293,6 +313,19 @@ func Signup(repo models.UserRepository) routes.Routes {
 			Path:    "/signup",
 			Method:  http.MethodPost,
 			Handler: handler.receive,
+		},
+	}
+}
+
+// GetAuthentication checks if a user has already signed in
+func GetAuthentication(repo models.UserRepository) routes.Routes {
+	handler := getAuthenticationHandler{repo}
+
+	return routes.Routes{
+		{
+			Path:    "/authentication",
+			Method:  http.MethodGet,
+			Handler: handler.handle,
 		},
 	}
 }
