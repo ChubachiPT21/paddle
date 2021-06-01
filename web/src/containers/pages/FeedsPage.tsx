@@ -8,6 +8,7 @@ import FeedTemplate from 'src/containers/templates/FeedTemplate'
 import { IUser } from 'src/type'
 import { getAuthentication } from 'src/actions/authenticationActions'
 import { useHistory } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 const FeedsPage: FC = () => {
   const dispatch = useDispatch()
@@ -27,13 +28,15 @@ const FeedsPage: FC = () => {
     asyncFunc()
   }, [])
 
+  const { id } = useParams<Record<string, string>>()
+
   if (authenticationError) history.push('/signin')
 
   if (user.token) {
     return (
       <DefaultTemplate defaultNavigation={HeaderNavigation.home}>
         <FeedTemplate>
-          <FeedList />
+          <FeedList sourceId={Number(id)} />
         </FeedTemplate>
       </DefaultTemplate>
     )
