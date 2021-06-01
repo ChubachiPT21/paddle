@@ -13,6 +13,7 @@ import (
 	"github.com/ChubachiPT21/paddle/internal/usecase"
 	"github.com/ChubachiPT21/paddle/pkg/routes"
 	_ "github.com/go-sql-driver/mysql"
+
 )
 
 func main() {
