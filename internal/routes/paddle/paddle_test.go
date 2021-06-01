@@ -94,9 +94,9 @@ func TestCreateInterestHandler_receive(t *testing.T) {
 		c, _ := gin.CreateTestContext(w)
 		c.Params = gin.Params{gin.Param{Key: "feed_id", Value: "1"}}
 
-		body := strings.NewReader("") 
+		body := strings.NewReader("")
 		c.Request, _ = http.NewRequest("POST", "/sources/:id/feeds/:feed_id/interest", body)
-		c.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded") 
+		c.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		routeStruct.Handler(c)
 		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
 	})

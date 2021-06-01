@@ -27,6 +27,7 @@ const reducer = (
       return {
         ...state,
         user: action.payload.user,
+        error: false,
       }
     case AuthenticationActionTypes.AUTHENTICATION_ERROR:
       return {
