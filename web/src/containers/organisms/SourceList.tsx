@@ -18,9 +18,10 @@ const SourceList: FC = () => {
   }
   return (
     <div className="sourceList">
-      {sources.map((source) => (
-        <SourceInList key={source.id} source={source} onClick={onClick} />
-      ))}
+      {sources &&
+        sources.map((source) => (
+          <SourceInList key={source.id} source={source} onClick={onClick} />
+        ))}
     </div>
   )
 }
