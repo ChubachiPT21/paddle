@@ -31,3 +31,9 @@ type UpdateRepository interface {
 	Create(sourceID int64, fetchedAt time.Time) (*orm.Update, error)
 	Update(update *orm.Update) error
 }
+
+// UserRepository is an interface
+type UserRepository interface {
+	FindByToken(token string) (*orm.User, error)
+	Create(email string, encryptedPassword string, token string) error
+}

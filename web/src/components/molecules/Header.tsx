@@ -4,6 +4,7 @@ import Explore from 'src/components/atoms/Explore'
 import Home from 'src/components/atoms/Home'
 import RssIcon from 'src/images/RssIcon.svg'
 import { useHistory } from 'react-router'
+import { IUser } from 'src/type'
 
 export enum HeaderNavigation {
   home = 'home',
@@ -12,11 +13,11 @@ export enum HeaderNavigation {
 }
 
 type Props = {
-  email: string | null
+  user: IUser
   currentNavigation: HeaderNavigation
 }
 
-const Header: FC<Props> = ({ email, currentNavigation }) => {
+const Header: FC<Props> = ({ user, currentNavigation }) => {
   const history = useHistory()
 
   return (
@@ -34,7 +35,7 @@ const Header: FC<Props> = ({ email, currentNavigation }) => {
           onClick={() => history.push('/explore')}
         />
       </div>
-      <HeaderRightMenu email={email} />
+      <HeaderRightMenu user={user} />
     </div>
   )
 }
