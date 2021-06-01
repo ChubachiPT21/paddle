@@ -12,6 +12,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/mmcdole/gofeed"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ChubachiPT21/paddle/internal/models"
 	"github.com/ChubachiPT21/paddle/internal/usecase"
