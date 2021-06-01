@@ -6,6 +6,7 @@ import './styles/App.scss'
 import reportWebVitals from './reportWebVitals'
 
 import FeedsPage from './containers/pages/FeedsPage'
+import ExplorePage from './containers/pages/ExplorePage'
 import AuthenticationPage, {
   AuthType,
 } from './containers/pages/AuthenticationPage'
@@ -18,6 +19,8 @@ ReactDOM.render(
     <React.StrictMode>
       <Router>
         <Switch>
+          <Route exact path="/sources/:id/feeds" component={FeedsPage} />
+          <Route exact path="/explore" component={ExplorePage} />
           <Route exact path="/" component={FeedsPage} />
           <Route
             exact
