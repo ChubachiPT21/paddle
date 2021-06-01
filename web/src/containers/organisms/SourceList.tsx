@@ -14,7 +14,7 @@ const SourceList: FC = () => {
 
   const onClick = (sourceId: number) => {
     dispatch(fetchFeeds(sourceId))
-    history.push(`sources/${sourceId}/feeds`)
+    history.push(`/sources/${sourceId}/feeds`)
   }
   return (
     <div className="sourceList">
