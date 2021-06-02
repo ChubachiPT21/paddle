@@ -65,8 +65,13 @@ func TestCreateSourceHandler_receive(t *testing.T) {
 		return nil
 	})
 
+	usecaseMock := usecase.NewMockCreateFeedInterface(ctrl)
+	usecaseMock.EXPECT().CreateFeed(gomock.Any()).DoAndReturn(func(_ int64) error {
+		return nil
+	})
+
 	t.Run("return 200", func(t *testing.T) {
-		routeStruct := paddle.CreateSource(mock)[0]
+		routeStruct := paddle.CreateSource(mock, usecaseMock)[0]
 
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
