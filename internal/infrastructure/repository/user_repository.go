@@ -35,3 +35,9 @@ func (repo *userRepository) FindByToken(token string) (*orm.User, error) {
 		Where("token = ?", token),
 	).One(context.Background(), database.DBCon)
 }
+
+func (repo *userRepository) FindByEmail(email string) (*orm.User, error) {
+	return orm.Users(
+		Where("email = ?", email),
+	).One(context.Background(), database.DBCon)
+}
