@@ -23,6 +23,11 @@ export type IUser = {
   token: string
 }
 
+export type IRss = {
+  title: string
+  url: string
+}
+
 export enum FeedActionTypes {
   FETCH_FEEDS_START = '@@feeds/FETCH_FEEDS_START',
   FETCH_FEEDS_SUCCESS = '@@feeds/FETCH_FEEDS_SUCCESS',
@@ -39,4 +44,9 @@ export enum AuthenticationActionTypes {
   AUTHENTICATION_START = '@@sign/AUTHENTICATION_START',
   AUTHENTICATION_SUCCESS = '@@sign/AUTHENTICATION_SUCCESS',
   AUTHENTICATION_ERROR = '@@sign/AUTHENTICATION_ERROR',
+}
+export enum PreviewActionTypes {
+  FETCH_RSS_START = '@@source/FETCH_RSS_START',
+  FETCH_RSS_SUCCESS = '@@source/FETCH_RSS_SUCCESS',
+  FETCH_RSS_ERROR = '@@source/FETCH_RSS_ERROR',
 }
