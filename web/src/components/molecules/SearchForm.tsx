@@ -1,6 +1,7 @@
 import React, { FC, useState, ChangeEvent } from 'react'
 import Input from 'src/components/atoms/Input'
 import Search from 'src/components/atoms/Search'
+import PreviewResult from 'src/components/molecules/PreviewResult'
 
 type Props = {
   onClick(url: string): void
@@ -23,6 +24,7 @@ const SearchForm: FC<Props> = ({ onClick }) => {
           <Search onClick={() => onClick(url)} />
         </div>
       </form>
+      <PreviewResult url={url} />
     </div>
   )
 }

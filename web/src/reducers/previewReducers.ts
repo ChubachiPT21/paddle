@@ -1,21 +1,16 @@
-import { IRss, PreviewActionTypes } from 'src/type'
+import { PreviewActionTypes } from 'src/type'
 import { PreviewActions } from 'src/actions/previewActions'
 
 export interface IRssState {
-  rss: IRss
+  rss: string
   error: boolean
   isFetching: boolean
-  isSuccess: boolean
 }
 
 const initialState: IRssState = {
-  rss: {
-    title: '',
-    url: '',
-  },
+  rss: '',
   error: false,
   isFetching: false,
-  isSuccess: false,
 }
 
 const reducer = (
@@ -34,7 +29,6 @@ const reducer = (
         rss: action.payload.rss,
         error: false,
         isFetching: false,
-        isSuccess: true,
       }
     case PreviewActionTypes.FETCH_RSS_ERROR:
       return {

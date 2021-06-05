@@ -1,13 +1,10 @@
 import React, { FC } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import SearchForm from 'src/components/molecules/SearchForm'
-import PreviewResult from 'src/components/molecules/PreviewResult'
 import { fetchRss } from 'src/actions/previewActions'
-import { IRss } from 'src/type'
 
 const RssSearch: FC = () => {
   const dispatch = useDispatch()
-  const preview = useSelector((state: { rss: IRss }) => state.rss)
 
   const onClick = (url: string) => {
     dispatch(fetchRss(url))
@@ -18,7 +15,6 @@ const RssSearch: FC = () => {
         <span>Add RSS sources </span>
       </div>
       <SearchForm onClick={onClick} />
-      <PreviewResult preview={preview} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { Action, Dispatch } from 'redux'
 import previewRequest from 'src/api/previewRequest'
-import { PreviewActionTypes, IRss } from '../type'
+import { PreviewActionTypes } from '../type'
 
 interface IFetchRssAction extends Action {
   type: PreviewActionTypes.FETCH_RSS_START
@@ -9,7 +9,7 @@ interface IFetchRssAction extends Action {
 interface IFetchRssSuccess extends Action {
   type: PreviewActionTypes.FETCH_RSS_SUCCESS
   payload: {
-    rss: IRss
+    rss: string
   }
 }
 
@@ -24,7 +24,7 @@ const fetchRssBegin = (): IFetchRssAction => ({
   type: PreviewActionTypes.FETCH_RSS_START,
 })
 
-const fetchRssSuccess = (rss: IRss): IFetchRssSuccess => ({
+const fetchRssSuccess = (rss: string): IFetchRssSuccess => ({
   type: PreviewActionTypes.FETCH_RSS_SUCCESS,
   payload: {
     rss,

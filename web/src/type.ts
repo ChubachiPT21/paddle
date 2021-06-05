@@ -25,7 +25,6 @@ export type IUser = {
 
 export type IRss = {
   title: string
-  url: string
 }
 
 export enum FeedActionTypes {
