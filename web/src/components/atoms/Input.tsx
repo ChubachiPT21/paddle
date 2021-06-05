@@ -5,6 +5,7 @@ type Props = {
   type: string
   placeholder: string
   onChange(value: any): void
+  onKeyDown?(value: any): void
   title?: string
 }
 
@@ -13,6 +14,7 @@ const Input: FC<Props> = ({
   type,
   placeholder,
   onChange,
+  onKeyDown,
   title,
 }) => {
   return (
@@ -22,6 +24,7 @@ const Input: FC<Props> = ({
       </div>
       <input
         onChange={onChange}
+        onKeyDown={onKeyDown}
         className={className}
         placeholder={placeholder}
         type={type}

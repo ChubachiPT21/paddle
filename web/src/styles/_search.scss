@@ -58,7 +58,7 @@
     border-radius: 10px;
     position: relative;
   }
-  &__redar{
+  &__redarSmall{
     position:absolute;
     bottom:0px;
     padding:0px;
@@ -109,13 +109,16 @@
     background: $btn-primary-color;
     outline: none; 
   }
-  &__init{
+  &__redarBig{
     width: 800px;
     height:250px;
     margin: 35px auto;
   }
+  &__init{
+    text-align: center;
+  }
   &__error{
     display: block;
-    text-align: center;
+    margin: 10px auto;
   }
 }
