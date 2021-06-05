@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { useSelector } from 'react-redux'
 import RedarSmall from 'src/images/RedarSmall.svg'
 import RedarBig from 'src/images/RedarBig.svg'
+import RedarError from 'src/images/RedarError.svg'
 import { ISource } from 'src/type'
 import FollowButton from '../atoms/FollowButton'
 
@@ -12,6 +13,9 @@ type Props = {
 const PreviewResult: FC<Props> = ({ url }) => {
   const preview = useSelector(
     (state: { preview: { rss: string } }) => state.preview.rss
+  )
+  const error = useSelector(
+    (state: { preview: { error: boolean } }) => state.preview.error
   )
   const sources = useSelector(
     (state: { source: { sources: ISource[] } }) => state.source.sources
@@ -24,7 +28,15 @@ const PreviewResult: FC<Props> = ({ url }) => {
   }
   return (
     <div className="search__result">
-      {preview ? (
+      {error && (
+        <div className="search__error">
+          <img className="search__init" src={RedarError} alt="redar_error" />
+          <span>Sorry,there is no results match your search</span>
+        </div>
+      )}
+
+      {!url && <img className="search__init" src={RedarBig} alt="redar_big" />}
+      {preview && (
         <div>
           <span className="search__resultTitle">Matched sources</span>
           <div className="search__resultBox">
@@ -44,8 +56,6 @@ const PreviewResult: FC<Props> = ({ url }) => {
             </div>
           </div>
         </div>
-      ) : (
-        <img className="search__init" src={RedarBig} alt="redar_big" />
       )}
     </div>
   )

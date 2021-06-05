@@ -111,7 +111,11 @@
   }
   &__init{
     width: 800px;
-    height:100px;
+    height:250px;
     margin: 35px auto;
+  }
+  &__error{
+    display: block;
+    text-align: center;
   }
 }
