@@ -23,10 +23,6 @@ export type IUser = {
   token: string
 }
 
-export type IRss = {
-  title: string
-}
-
 export enum FeedActionTypes {
   FETCH_FEEDS_START = '@@feeds/FETCH_FEEDS_START',
   FETCH_FEEDS_SUCCESS = '@@feeds/FETCH_FEEDS_SUCCESS',
