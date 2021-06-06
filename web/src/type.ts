@@ -40,3 +40,8 @@ export enum AuthenticationActionTypes {
   AUTHENTICATION_SUCCESS = '@@sign/AUTHENTICATION_SUCCESS',
   AUTHENTICATION_ERROR = '@@sign/AUTHENTICATION_ERROR',
 }
+export enum PreviewActionTypes {
+  FETCH_RSS_START = '@@source/FETCH_RSS_START',
+  FETCH_RSS_SUCCESS = '@@source/FETCH_RSS_SUCCESS',
+  FETCH_RSS_ERROR = '@@source/FETCH_RSS_ERROR',
+}

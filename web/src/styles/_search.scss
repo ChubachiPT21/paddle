@@ -1,0 +1,124 @@
+.search {
+  
+  &__heading{
+    width: 800px;
+    margin:35px auto;
+    // margin-top: 35px;
+    // margin-bottom: 35px;
+    font-size: 28px;
+    color: #9E9B9B;
+  }
+  
+  &__form{
+    display: flex;
+    position: relative;
+    width: 800px;
+    margin: 0 auto;
+    flex: 1;
+  }
+  
+  &__input{
+    margin-top: 14px;
+    margin-bottom: 14px;
+    padding: 0 10px;
+    width: 800px;
+    height: 60px;
+    line-height: 32px;
+    border: 1px solid #C4C4C4;
+    border-right: none;
+    box-sizing: border-box;
+    border-radius: 10px 0 0 10px;
+  }
+  &__icon{
+    margin-top: 14px;
+    padding: 14px 0px 0px 14px;
+    cursor: pointer;
+    width: 65px;
+    height: 60px;
+    border: 1px solid #C4C4C4;
+    border-radius: 0 10px 10px 0;
+    box-sizing: border-box;
+  }
+
+  &__result{
+    margin:35px auto;
+    width: 800px;
+  }
+  &__resultTitle{
+    display: block;
+    font-weight: bold;
+    margin-bottom: 20px;
+
+  }
+  &__resultBox{
+    display: flex;
+    width: 800px;
+    height: 110px;
+    border: 1px solid #C4C4C4;
+    border-radius: 10px;
+    position: relative;
+  }
+  &__redarSmall{
+    position:absolute;
+    bottom:0px;
+    padding:0px;
+    margin:0px;
+  }
+  &__source{
+    margin-left: 60px;
+    width: 600px;
+  }
+  &__sourceTitle{
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  &__sourceUrl{
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #C4C4C4;
+  }
+  &__follow{
+    display: flex;
+    margin: 0 15px;
+    align-items: center;
+  }
+  &__btnFollowing{
+    height: 40px;
+    padding: 9px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid $btn-primary-color;
+    background:#ffffff;
+    border-radius: 6px;
+    color: $btn-primary-color;
+    cursor: pointer;
+    outline: none; 
+  }
+  &__btnFollow{
+    height: 40px;
+    padding: 9px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    background: $btn-primary-color;
+    outline: none; 
+  }
+  &__redarBig{
+    width: 800px;
+    height:250px;
+    margin: 35px auto;
+  }
+  &__init{
+    text-align: center;
+  }
+  &__error{
+    display: block;
+    margin: 10px auto;
+  }
+}
