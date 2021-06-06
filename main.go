@@ -13,7 +13,6 @@ import (
 	"github.com/ChubachiPT21/paddle/internal/usecase"
 	"github.com/ChubachiPT21/paddle/pkg/routes"
 	_ "github.com/go-sql-driver/mysql"
-
 )
 
 func main() {
@@ -40,7 +39,7 @@ func main() {
 	)
 	routes.AddRoutes(
 		v1,
-		paddle.CreateSource(repository.NewSourceRepository())...,
+		paddle.CreateSource(repository.NewSourceRepository(), usecase.NewCreateFeedStruct())...,
 	)
 	routes.AddRoutes(
 		v1,
