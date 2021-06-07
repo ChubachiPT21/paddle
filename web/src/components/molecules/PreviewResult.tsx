@@ -1,8 +1,9 @@
 import React, { FC } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import RedarSmall from 'src/images/RedarSmall.svg'
 import RedarError from 'src/images/RedarError.svg'
 import { ISource } from 'src/type'
+import { createSource } from 'src/actions/createSourceActions'
 import FollowButton from '../atoms/FollowButton'
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
 }
 
 const PreviewResult: FC<Props> = ({ url, isSearched }) => {
+  const dispatch = useDispatch()
   const preview = useSelector(
     (state: { preview: { rss: string } }) => state.preview.rss
   )
@@ -23,7 +25,7 @@ const PreviewResult: FC<Props> = ({ url, isSearched }) => {
   const isFollow = !!sources.find((s) => s.title === preview)
   const show = preview && isSearched && !error
   const onClick = () => {
-    // todo sourceをCreat
+    if (!isFollow) dispatch(createSource(preview, url))
     // todo sourceをUnfollowする
   }
   return (
