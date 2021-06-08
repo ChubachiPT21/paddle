@@ -22,6 +22,13 @@ export type IUser = {
   email: string
   token: string
 }
+export type IPreview = {
+  title: string
+}
+export type IRss = {
+  url: string
+  title: string
+}
 
 export enum FeedActionTypes {
   FETCH_FEEDS_START = '@@feeds/FETCH_FEEDS_START',
@@ -47,6 +54,6 @@ export enum PreviewActionTypes {
 }
 export enum CreateSourceActionTypes {
   CREATE_SOURCE_START = '@@source/CREATE_SOURCE_START',
-  CREATE_SOURCE_SUCCESS = '@@source/CREATE_SOURCES_SUCCESS',
+  CREATE_SOURCE_SUCCESS = '@@source/CREATE_SOURCE_SUCCESS',
   CREATE_SOURCE_ERROR = '@@source/CREATE_SOURCE_ERROR',
 }

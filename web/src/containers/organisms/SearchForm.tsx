@@ -1,7 +1,7 @@
 import React, { FC, useState, ChangeEvent, KeyboardEvent } from 'react'
 import Input from 'src/components/atoms/Input'
 import Search from 'src/components/atoms/Search'
-import PreviewResult from 'src/components/molecules/PreviewResult'
+import PreviewResult from 'src/containers/organisms/PreviewResult'
 import RedarBig from 'src/images/RedarBig.svg'
 
 type Props = {

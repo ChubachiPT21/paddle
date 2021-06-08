@@ -1,5 +1,5 @@
 import { Action, Dispatch } from 'redux'
-import { CreateSourceActionTypes, ISource } from 'src/type'
+import { CreateSourceActionTypes, IRss } from 'src/type'
 
 import sourcesRequest from 'src/api/sourcesRequest'
 
@@ -10,7 +10,7 @@ interface ICreateSourceAction extends Action {
 interface ICreateSourceSuccess extends Action {
   type: CreateSourceActionTypes.CREATE_SOURCE_SUCCESS
   payload: {
-    source: ISource
+    result: any
   }
 }
 
@@ -25,10 +25,10 @@ const createSourceBegin = (): ICreateSourceAction => ({
   type: CreateSourceActionTypes.CREATE_SOURCE_START,
 })
 
-const createSourceSuccess = (source: ISource): ICreateSourceSuccess => ({
+const createSourceSuccess = (result: any): ICreateSourceSuccess => ({
   type: CreateSourceActionTypes.CREATE_SOURCE_SUCCESS,
   payload: {
-    source,
+    result,
   },
 })
 
@@ -39,11 +39,11 @@ const createSourceError = (error: Error): ICreateSourceError => ({
   },
 })
 
-export const createSource = (title: string, url: string) => {
+export const createSource = (rss: IRss) => {
   return (dispatch: Dispatch) => {
     dispatch(createSourceBegin())
     return sourcesRequest
-      .createSource(title, url)
+      .createSource(rss)
       .then((res) => {
         dispatch(createSourceSuccess(res.data))
       })
