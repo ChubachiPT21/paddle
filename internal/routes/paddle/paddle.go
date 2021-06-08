@@ -130,23 +130,14 @@ func (h *signinHandler) receive(c *gin.Context) {
 	var authenticationRequest authenticationRequest
 	c.BindJSON(&authenticationRequest)
 
-	data := make([]byte, 10)
-	if _, err := rand.Read(data); err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusInternalServerError, nil)
-		return
-	}
-	randomString := sha256.Sum256(data)
-	token := hex.EncodeToString(randomString[:])
-
 	user, err := h.repo.FindByEmail(authenticationRequest.Email)
 	if err != nil || user == nil || bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword.String), []byte(authenticationRequest.Password)) != nil {
 		c.JSON(http.StatusUnauthorized, nil)
 	} else {
 		session.Set("email", user.Email)
-		session.Set("token", token)
+		session.Set("token", user.Token.String)
 		session.Save()
-		c.JSON(http.StatusOK, gin.H{"token": token, "email": user.Email})
+		c.JSON(http.StatusOK, gin.H{"token": user.Token.String, "email": user.Email})
 	}
 }
 
