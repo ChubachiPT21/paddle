@@ -1,20 +1,18 @@
-import React, { FC, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { FC } from 'react'
+import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import RedarSmall from 'src/images/RedarSmall.svg'
 import RedarError from 'src/images/RedarError.svg'
 import { ISource, IPreview, IRss } from 'src/type'
-import { createSource } from 'src/actions/createSourceActions'
-import FollowButton from '../../components/atoms/FollowButton'
+import { createSource } from 'src/actions/sourceActions'
+import FollowButton from 'src/components/atoms/FollowButton'
 
 type Props = {
   url: string
-  isSearched: boolean
 }
 
-const PreviewResult: FC<Props> = ({ url, isSearched }) => {
+const PreviewResult: FC<Props> = ({ url }) => {
   const history = useHistory()
-  const dispatch = useDispatch()
   const preview = useSelector(
     (state: { search: { preview: IPreview } }) => state.search.preview
   )
@@ -24,33 +22,30 @@ const PreviewResult: FC<Props> = ({ url, isSearched }) => {
   const sources = useSelector(
     (state: { source: { sources: ISource[] } }) => state.source.sources
   )
+
   // sourceのフォロー状態
-  const isFollowed = !!sources.find((s) => s.title === preview.title)
-  const [follow, setFollow] = useState(isFollowed)
+  const isFollowing = () =>
+    sources && !!sources.find((s) => s.title === preview.title)
+
   // 検索判定
-  const show = preview && isSearched && !error
-  const onClick = () => {
+  const hasResult = preview && !error
+  const onClick = async () => {
     const rss: IRss = {
       url,
       title: preview.title,
     }
-    if (isFollowed === false) {
-      dispatch(createSource(rss))
-      setFollow(!isFollowed)
-      goFeed()
+
+    if (!isFollowing()) {
+      const sourceId = await createSource(rss)
+      history.push(`/sources/${sourceId}/feeds`)
     } else {
-      // 登録したsourceをunfollowする
-      setFollow(!isFollowed)
+      // TODO: Unfollow action
     }
   }
 
-  const goFeed = () => {
-    const sourceId = sources.find((s) => s.title === preview.title)?.id
-    history.push(`/sources/${sourceId}/feeds`)
-  }
   return (
     <div className="search__result">
-      {show ? (
+      {hasResult ? (
         <div>
           <span className="search__resultTitle">Matched sources</span>
           <div className="search__resultBox">
@@ -64,13 +59,7 @@ const PreviewResult: FC<Props> = ({ url, isSearched }) => {
               <span className="search__sourceUrl">{url}</span>
             </div>
             <div className="search__follow">
-              <FollowButton
-                className={
-                  follow ? 'search__btnFollowing' : 'search__btnFollow'
-                }
-                buttonName={follow ? 'FOLLOWING' : 'FOLLOW'}
-                onClick={onClick}
-              />
+              <FollowButton isFollowing={isFollowing()} onClick={onClick} />
             </div>
           </div>
         </div>

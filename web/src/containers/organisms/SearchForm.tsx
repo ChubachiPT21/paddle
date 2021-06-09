@@ -40,7 +40,7 @@ const SearchForm: FC<Props> = ({ onClick }) => {
         </div>
       </form>
       {isSearched ? (
-        <PreviewResult url={url} isSearched={isSearched} />
+        <PreviewResult url={url} />
       ) : (
         <div className="search__init">
           <img className="search__redarBig" src={RedarBig} alt="redar_big" />

@@ -52,8 +52,3 @@ export enum PreviewActionTypes {
   FETCH_RSS_SUCCESS = '@@source/FETCH_RSS_SUCCESS',
   FETCH_RSS_ERROR = '@@source/FETCH_RSS_ERROR',
 }
-export enum CreateSourceActionTypes {
-  CREATE_SOURCE_START = '@@source/CREATE_SOURCE_START',
-  CREATE_SOURCE_SUCCESS = '@@source/CREATE_SOURCE_SUCCESS',
-  CREATE_SOURCE_ERROR = '@@source/CREATE_SOURCE_ERROR',
-}

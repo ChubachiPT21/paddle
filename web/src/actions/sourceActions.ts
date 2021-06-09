@@ -1,5 +1,5 @@
 import { Action, Dispatch } from 'redux'
-import { SourceActionTypes, ISource } from 'src/type'
+import { SourceActionTypes, ISource, IRss } from 'src/type'
 
 import sourcesRequest from 'src/api/sourcesRequest'
 
@@ -51,6 +51,16 @@ export const fetchSources = () => {
         dispatch(fetchSourcesError(error))
       })
   }
+}
+
+export const createSource = (rss: IRss) => {
+  return sourcesRequest
+    .createSource(rss.url)
+    .then((res) => res.data.sourceID)
+    .catch((e) => {
+      console.error(e)
+      return false
+    })
 }
 
 export type SourceActions =
