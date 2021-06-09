@@ -58,6 +58,7 @@ export const createSource = (rss: IRss) => {
     .createSource(rss.url)
     .then((res) => res.data.sourceID)
     .catch((e) => {
+      /* eslint-disable no-console */
       console.error(e)
       return false
     })
