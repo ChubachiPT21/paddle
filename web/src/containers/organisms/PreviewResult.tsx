@@ -1,34 +1,51 @@
 import React, { FC } from 'react'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router'
 import RedarSmall from 'src/images/RedarSmall.svg'
 import RedarError from 'src/images/RedarError.svg'
-import { ISource } from 'src/type'
-import FollowButton from '../atoms/FollowButton'
+import { ISource, IPreview, IRss } from 'src/type'
+import { createSource } from 'src/actions/sourceActions'
+import FollowButton from 'src/components/atoms/FollowButton'
 
 type Props = {
   url: string
-  isSearched: boolean
 }
 
-const PreviewResult: FC<Props> = ({ url, isSearched }) => {
+const PreviewResult: FC<Props> = ({ url }) => {
+  const history = useHistory()
   const preview = useSelector(
-    (state: { preview: { rss: string } }) => state.preview.rss
+    (state: { search: { preview: IPreview } }) => state.search.preview
   )
   const error = useSelector(
-    (state: { preview: { error: boolean } }) => state.preview.error
+    (state: { search: { error: boolean } }) => state.search.error
   )
   const sources = useSelector(
     (state: { source: { sources: ISource[] } }) => state.source.sources
   )
-  const isFollow = !!sources.find((s) => s.title === preview)
-  const show = preview && isSearched && !error
-  const onClick = () => {
-    // todo sourceをCreat
-    // todo sourceをUnfollowする
+
+  // sourceのフォロー状態
+  const isFollowing = () =>
+    sources && !!sources.find((s) => s.title === preview.title)
+
+  // 検索判定
+  const hasResult = preview && !error
+  const onClick = async () => {
+    const rss: IRss = {
+      url,
+      title: preview.title,
+    }
+
+    if (!isFollowing()) {
+      const sourceId = await createSource(rss)
+      history.push(`/sources/${sourceId}/feeds`)
+    } else {
+      // TODO: Unfollow action
+    }
   }
+
   return (
     <div className="search__result">
-      {show ? (
+      {hasResult ? (
         <div>
           <span className="search__resultTitle">Matched sources</span>
           <div className="search__resultBox">
@@ -38,17 +55,11 @@ const PreviewResult: FC<Props> = ({ url, isSearched }) => {
               alt="redar_small"
             />
             <div className="search__source">
-              <span className="search__sourceTitle">{preview}</span>
+              <span className="search__sourceTitle">{preview.title}</span>
               <span className="search__sourceUrl">{url}</span>
             </div>
             <div className="search__follow">
-              <FollowButton
-                className={
-                  isFollow ? 'search__btnFollowing' : 'search__btnFollow'
-                }
-                buttonName={isFollow ? 'FOLLOWING' : 'FOLLOW'}
-                onClick={onClick}
-              />
+              <FollowButton isFollowing={isFollowing()} onClick={onClick} />
             </div>
           </div>
         </div>

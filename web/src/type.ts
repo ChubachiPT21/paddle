@@ -22,6 +22,13 @@ export type IUser = {
   email: string
   token: string
 }
+export type IPreview = {
+  title: string
+}
+export type IRss = {
+  url: string
+  title: string
+}
 
 export enum FeedActionTypes {
   FETCH_FEEDS_START = '@@feeds/FETCH_FEEDS_START',

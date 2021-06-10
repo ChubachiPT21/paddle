@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useDispatch } from 'react-redux'
-import SearchForm from 'src/components/molecules/SearchForm'
+import SearchForm from 'src/containers/organisms/SearchForm'
 import { fetchRss } from 'src/actions/previewActions'
 
 const RssSearch: FC = () => {
