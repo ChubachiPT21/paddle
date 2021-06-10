@@ -207,7 +207,7 @@ func (h *createSourceHandler) receive(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, nil)
 	}
 
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusOK, gin.H{"sourceID": source.ID})
 }
 
 func (h *createFeedsHandler) receive(c *gin.Context) {
