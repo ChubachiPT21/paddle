@@ -10,8 +10,6 @@ import (
 	"github.com/ChubachiPT21/paddle/internal/routes/paddle"
 	"github.com/ChubachiPT21/paddle/internal/usecase"
 	"github.com/ChubachiPT21/paddle/pkg/orm"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	"github.com/golang/mock/gomock"
@@ -59,10 +57,6 @@ func TestGetSourcesHandler_handle(t *testing.T) {
 }
 
 func TestCreateSourceHandler_receive(t *testing.T) {
-	r := gin.Default()
-	store := cookie.NewStore([]byte("secret"))
-	r.Use(sessions.Sessions("paddleSession", store))
-
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
