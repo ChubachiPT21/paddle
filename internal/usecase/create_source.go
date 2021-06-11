@@ -7,7 +7,7 @@ import (
 )
 
 type CreateSourceInterface interface {
-	CreateSource(source *orm.Source) error
+	CreateSource(token string, source *orm.Source) error
 }
 
 type CreateSourceStruct struct {
@@ -18,16 +18,23 @@ func NewCreateSourceStruct() CreateSourceInterface {
 }
 
 // CreateSource is an usecase to create a source
-func (CreateSourceStruct) CreateSource(source *orm.Source) error {
+func (CreateSourceStruct) CreateSource(token string, source *orm.Source) error {
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseURL(source.URL)
 	if err != nil {
 		return err
 	}
 
+	userRepo := repository.NewUserRepository()
+	user, err := userRepo.FindByToken(token)
+	if err != nil || user == nil {
+		return err
+	}
+
+	source.UserID = user.ID
 	source.Title = feed.Title
-	repo := repository.NewSourceRepository()
-	err = repo.Create(source)
+	sourceRepo := repository.NewSourceRepository()
+	err = sourceRepo.Create(source)
 	if err != nil {
 		return err
 	}

@@ -183,9 +183,19 @@ func (h *getSourcesHandler) handle(c *gin.Context) {
 }
 
 func (h *createSourceHandler) receive(c *gin.Context) {
-	source := orm.Source{
-		UserID: 1,
+	var v interface{}
+	if c.Param("testMode") != "true" {
+		session := sessions.Default(c)
+		v := session.Get("token")
+		if v == nil {
+			c.JSON(http.StatusUnauthorized, nil)
+			return
+		}
+	} else {
+		v = "test_token"
 	}
+
+	source := orm.Source{}
 	err := c.Bind(&source)
 	if err != nil {
 		fmt.Println(err)
@@ -193,7 +203,7 @@ func (h *createSourceHandler) receive(c *gin.Context) {
 		return
 	}
 
-	err = h.usecase.CreateSource(&source)
+	err = h.usecase.CreateSource(v.(string), &source)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)

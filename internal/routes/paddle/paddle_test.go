@@ -10,6 +10,8 @@ import (
 	"github.com/ChubachiPT21/paddle/internal/routes/paddle"
 	"github.com/ChubachiPT21/paddle/internal/usecase"
 	"github.com/ChubachiPT21/paddle/pkg/orm"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	"github.com/golang/mock/gomock"
@@ -57,11 +59,15 @@ func TestGetSourcesHandler_handle(t *testing.T) {
 }
 
 func TestCreateSourceHandler_receive(t *testing.T) {
+	r := gin.Default()
+	store := cookie.NewStore([]byte("secret"))
+	r.Use(sessions.Sessions("paddleSession", store))
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	usecaseMock := usecase.NewMockCreateSourceInterface(ctrl)
-	usecaseMock.EXPECT().CreateSource(gomock.Any()).DoAndReturn(func(_ *orm.Source) error {
+	usecaseMock.EXPECT().CreateSource(gomock.Any(), gomock.Any()).DoAndReturn(func(token string, _ *orm.Source) error {
 		return nil
 	})
 
@@ -70,12 +76,13 @@ func TestCreateSourceHandler_receive(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
-
 		body := strings.NewReader("") // 空でもbodyがないとtestを通らない
-		c.Request, _ = http.NewRequest("POST", "vi/sources", body)
+		c.Request, _ = http.NewRequest("POST", "v1/sources", body)
 		c.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded") // typeは適当です
+		c.Params = gin.Params{gin.Param{Key: "testMode", Value: "true"}}
 
 		routeStruct.Handler(c)
+
 		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
 	})
 }
