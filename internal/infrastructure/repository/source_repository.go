@@ -32,3 +32,13 @@ func (repo *sourceRepository) All() (orm.SourceSlice, error) {
 func (repo *sourceRepository) Create(source *orm.Source) error {
 	return source.Insert(context.Background(), database.DBCon, boil.Infer())
 }
+
+// sourceIDで指定されたsourceを削除する
+func (repo *sourceRepository) Delete(sourceID int64) error {
+	source, err := repo.Find(sourceID)
+	if err != nil {
+		return err
+	}
+	_, err = source.Delete(context.Background(), database.DBCon)
+	return err
+}
