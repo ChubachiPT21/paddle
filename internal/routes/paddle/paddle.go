@@ -48,6 +48,10 @@ type signinHandler struct {
 	repo models.UserRepository
 }
 
+type signoutHandler struct {
+	repo models.UserRepository
+}
+
 type getAuthenticationHandler struct {
 	repo models.UserRepository
 }
@@ -137,6 +141,20 @@ func (h *signinHandler) receive(c *gin.Context) {
 		session.Set("token", user.Token.String)
 		session.Save()
 		c.JSON(http.StatusOK, gin.H{"token": user.Token.String, "email": user.Email})
+	}
+}
+
+func (h *signoutHandler) receive(c *gin.Context) {
+	session := sessions.Default(c)
+	v := session.Get("token")
+
+	user, err := h.repo.FindByToken(v.(string))
+	if err != nil || user == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+	} else {
+		session.Clear()
+		session.Save()
+		c.JSON(http.StatusOK, nil)
 	}
 }
 
@@ -333,6 +351,19 @@ func Signin(repo models.UserRepository) routes.Routes {
 	return routes.Routes{
 		{
 			Path:    "/signin",
+			Method:  http.MethodPost,
+			Handler: handler.receive,
+		},
+	}
+}
+
+// Signin verifies a user and set a session
+func Signout(repo models.UserRepository) routes.Routes {
+	handler := new(signoutHandler)
+
+	return routes.Routes{
+		{
+			Path:    "/signout",
 			Method:  http.MethodPost,
 			Handler: handler.receive,
 		},
