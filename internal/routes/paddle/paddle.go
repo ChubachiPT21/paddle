@@ -183,17 +183,12 @@ func (h *getSourcesHandler) handle(c *gin.Context) {
 }
 
 func (h *createSourceHandler) receive(c *gin.Context) {
-	var v interface{}
 	fmt.Println(c.Param("testMode"))
-	if c.Param("testMode") != "true" {
-		session := sessions.Default(c)
-		v = session.Get("token")
-		if v == nil {
-			c.JSON(http.StatusUnauthorized, nil)
-			return
-		}
-	} else {
-		v = "test_token"
+	session := sessions.Default(c)
+	v := session.Get("token")
+	if v == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
 	}
 
 	source := orm.Source{}
