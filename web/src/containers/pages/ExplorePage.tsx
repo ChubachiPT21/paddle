@@ -4,6 +4,7 @@ import { HeaderNavigation } from 'src/components/molecules/Header'
 import { fetchSources } from 'src/actions/sourceActions'
 import DefaultTemplate from 'src/containers/templates/DefaultTemplate'
 import FeedTemplate from 'src/containers/templates/FeedTemplate'
+import RssSearch from 'src/containers/organisms/RssSearch'
 
 const ExplorePage: FC = () => {
   const dispatch = useDispatch()
@@ -17,7 +18,9 @@ const ExplorePage: FC = () => {
 
   return (
     <DefaultTemplate defaultNavigation={HeaderNavigation.explore}>
-      <FeedTemplate />
+      <FeedTemplate>
+        <RssSearch />
+      </FeedTemplate>
     </DefaultTemplate>
   )
 }

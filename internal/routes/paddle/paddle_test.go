@@ -60,13 +60,13 @@ func TestCreateSourceHandler_receive(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mock := models.NewMockSourceRepository(ctrl)
-	mock.EXPECT().Create(gomock.Any()).DoAndReturn(func(_ *orm.Source) error {
+	usecaseMock := usecase.NewMockCreateSourceInterface(ctrl)
+	usecaseMock.EXPECT().CreateSource(gomock.Any()).DoAndReturn(func(_ *orm.Source) error {
 		return nil
 	})
 
 	t.Run("return 200", func(t *testing.T) {
-		routeStruct := paddle.CreateSource(mock)[0]
+		routeStruct := paddle.CreateSource(usecaseMock)[0]
 
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)

@@ -30,6 +30,7 @@ const AuthenticationForm: FC<Props> = ({ authType }) => {
       <div className="sign__content">
         <span className="sign__title">{title}</span>
         <Input
+          className="input"
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }
@@ -38,6 +39,7 @@ const AuthenticationForm: FC<Props> = ({ authType }) => {
           placeholder="info@aiit.ac.jp"
         />
         <Input
+          className="input"
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setPassword(e.target.value)
           }

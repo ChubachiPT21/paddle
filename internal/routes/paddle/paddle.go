@@ -29,7 +29,7 @@ type getSourcesHandler struct {
 }
 
 type createSourceHandler struct {
-	repo models.SourceRepository
+	usecase usecase.CreateSourceInterface
 }
 
 type createFeedsHandler struct {
@@ -41,6 +41,10 @@ type createInterestHandler struct {
 }
 
 type signupHandler struct {
+	repo models.UserRepository
+}
+
+type signinHandler struct {
 	repo models.UserRepository
 }
 
@@ -88,24 +92,51 @@ func (h *signupHandler) receive(c *gin.Context) {
 
 	var authenticationRequest authenticationRequest
 	c.BindJSON(&authenticationRequest)
-
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte(authenticationRequest.Password), 10)
 
 	data := make([]byte, 10)
-	var token string
-	if _, err := rand.Read(data); err == nil {
-		randomString := sha256.Sum256(data)
-		token = hex.EncodeToString(randomString[:])
+	if _, err := rand.Read(data); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, nil)
+		return
 	}
+	randomString := sha256.Sum256(data)
+	token := hex.EncodeToString(randomString[:])
 
 	if err := h.repo.Create(authenticationRequest.Email, string(encryptedPassword), token); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
 	} else {
-		session = sessions.Default(c)
 		session.Set("token", token)
 		session.Save()
 		c.JSON(http.StatusOK, gin.H{"token": token, "email": authenticationRequest.Email})
+	}
+}
+
+func (h *signinHandler) receive(c *gin.Context) {
+	session := sessions.Default(c)
+	v := session.Get("token")
+	if v != nil {
+		user, err := h.repo.FindByToken(v.(string))
+		if err != nil || user == nil {
+			c.JSON(http.StatusUnauthorized, nil)
+		} else {
+			c.JSON(http.StatusOK, gin.H{"token": v, "email": user.Email})
+		}
+		return
+	}
+
+	var authenticationRequest authenticationRequest
+	c.BindJSON(&authenticationRequest)
+
+	user, err := h.repo.FindByEmail(authenticationRequest.Email)
+	if err != nil || user == nil || bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword.String), []byte(authenticationRequest.Password)) != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+	} else {
+		session.Set("email", user.Email)
+		session.Set("token", user.Token.String)
+		session.Save()
+		c.JSON(http.StatusOK, gin.H{"token": user.Token.String, "email": user.Email})
 	}
 }
 
@@ -162,14 +193,13 @@ func (h *createSourceHandler) receive(c *gin.Context) {
 		return
 	}
 
-	err = h.repo.Create(&source)
+	err = h.usecase.CreateSource(&source)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
-		return
 	}
 
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusOK, gin.H{"sourceID": source.ID})
 }
 
 func (h *createFeedsHandler) receive(c *gin.Context) {
@@ -245,8 +275,8 @@ func GetSources(repo models.SourceRepository) routes.Routes {
 }
 
 // CreateSource creates a new source
-func CreateSource(repo models.SourceRepository) routes.Routes {
-	handler := createSourceHandler{repo}
+func CreateSource(usecase usecase.CreateSourceInterface) routes.Routes {
+	handler := createSourceHandler{usecase}
 
 	return routes.Routes{
 		{
@@ -290,6 +320,19 @@ func Signup(repo models.UserRepository) routes.Routes {
 	return routes.Routes{
 		{
 			Path:    "/signup",
+			Method:  http.MethodPost,
+			Handler: handler.receive,
+		},
+	}
+}
+
+// Signin verifies a user and set a session
+func Signin(repo models.UserRepository) routes.Routes {
+	handler := signinHandler{repo}
+
+	return routes.Routes{
+		{
+			Path:    "/signin",
 			Method:  http.MethodPost,
 			Handler: handler.receive,
 		},
