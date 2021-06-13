@@ -40,6 +40,7 @@ export enum SourceActionTypes {
   FETCH_SOURCES_START = '@@sources/FETCH_SOURCES_START',
   FETCH_SOURCES_SUCCESS = '@@sources/FETCH_SOURCES_SUCCESS',
   FETCH_SOURCES_ERROR = '@@sources/FETCH_SOURCES_ERROR',
+  DELETE_SOURCE_SUCESS = '@@sources/DELETE_SOURCE_SUCESS',
 }
 
 export enum AuthenticationActionTypes {

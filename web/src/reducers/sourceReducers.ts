@@ -36,6 +36,14 @@ const reducer = (
         error: true,
         isFetching: false,
       }
+    case SourceActionTypes.DELETE_SOURCE_SUCESS:
+      return {
+        sources: state.sources.filter(
+          ({ id }) => id !== action.payload.sourceID
+        ),
+        error: false,
+        isFetching: false,
+      }
     default: {
       return state
     }
