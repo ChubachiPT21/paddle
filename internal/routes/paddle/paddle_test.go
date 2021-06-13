@@ -131,40 +131,46 @@ func TestCreateFeedsHandler_receive(t *testing.T) {
 	})
 }
 
-// func TestUnfollowHandler_unfollow(t *testing.T) {
-// 	ctrl := gomock.NewController(t)
-// 	defer ctrl.Finish()
+func TestUnfollowHandler_unfollow(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-// 	userID := int64(1)
+	userID := int64(1)
 
-// 	userMock := models.NewMockUserRepository(ctrl)
-// 	userMock.EXPECT().FindByToken(gomock.Any()).DoAndReturn(func(_ string) (*orm.User, error) {
-// 		return &orm.User{ID: userID}, nil
-// 	})
+	userMock := models.NewMockUserRepository(ctrl)
+	userMock.EXPECT().FindByToken(gomock.Any()).DoAndReturn(func(_ string) (*orm.User, error) {
+		return &orm.User{ID: userID}, nil
+	})
 
-// 	sourceMock := models.NewMockSourceRepository(ctrl)
-// 	sourceMock.EXPECT().Find(gomock.Any()).DoAndReturn(func(_ int64) (*orm.Source, error) {
-// 		return &orm.Source{UserID: userID}, nil
-// 	})
-// 	sourceMock.EXPECT().Delete(gomock.Any()).DoAndReturn(func(_ int64) error {
-// 		return nil
-// 	})
+	sourceMock := models.NewMockSourceRepository(ctrl)
+	sourceMock.EXPECT().Find(gomock.Any()).DoAndReturn(func(_ int64) (*orm.Source, error) {
+		return &orm.Source{UserID: userID}, nil
+	})
+	sourceMock.EXPECT().Delete(gomock.Any()).DoAndReturn(func(_ int64) error {
+		return nil
+	})
 
-// 	feedMock := models.NewMockFeedRepository(ctrl)
-// 	feedMock.EXPECT().DeleteAll(gomock.Any()).DoAndReturn(func(_ int64) error {
-// 		return nil
-// 	})
+	feedMock := models.NewMockFeedRepository(ctrl)
+	feedMock.EXPECT().DeleteAll(gomock.Any()).DoAndReturn(func(_ int64) error {
+		return nil
+	})
 
-// 	t.Run("return 200", func(t *testing.T) {
-// 		w := httptest.NewRecorder()
-// 		c, _ := gin.CreateTestContext(w)
-// 		c.Params = gin.Params{gin.Param{Key: "id", Value: "1"}}
+	t.Run("return 200", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+		c.Params = gin.Params{gin.Param{Key: "id", Value: "1"}}
+		req, _ := http.NewRequest("DELETE", "/v1/sources/1", nil) // Requestがあればよいのでパスは適当でよいはず
+		c.Request = req
 
-// 		session := sessions.Default(c)
-// 		session.Set("token", "token")
+		store := cookie.NewStore([]byte("secret"))
+		handler := sessions.Sessions("paddleSession", store)
+		handler(c)
 
-// 		routeStruct := paddle.Unfollow(userMock, sourceMock, feedMock)[0]
-// 		routeStruct.Handler(c)
-// 		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
-// 	})
-// }
+		session := sessions.Default(c)
+		session.Set("token", "適当なトークン") // FindByTokenをstub化しているのでtokenは存在していればよい
+
+		routeStruct := paddle.Unfollow(userMock, sourceMock, feedMock)[0]
+		routeStruct.Handler(c)
+		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
+	})
+}
