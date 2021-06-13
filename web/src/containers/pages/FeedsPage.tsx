@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import FeedList from 'src/containers/organisms/FeedList'
 import { HeaderNavigation } from 'src/components/molecules/Header'
 import { fetchSources } from 'src/actions/sourceActions'
+import { fetchFeeds } from 'src/actions/feedActions'
 import DefaultTemplate from 'src/containers/templates/DefaultTemplate'
 import FeedTemplate from 'src/containers/templates/FeedTemplate'
 import { IUser } from 'src/type'
@@ -19,16 +20,16 @@ const FeedsPage: FC = () => {
   const authenticationError = useSelector(
     (state: { user: { error: boolean } }) => state.user.error
   )
+  const { id } = useParams<Record<string, string>>()
 
   useEffect(() => {
     const asyncFunc = () => {
       dispatch(fetchSources())
+      dispatch(fetchFeeds(Number(id)))
       if (!user.token) dispatch(getAuthentication())
     }
     asyncFunc()
   }, [])
-
-  const { id } = useParams<Record<string, string>>()
 
   if (authenticationError) history.push('/signin')
 
