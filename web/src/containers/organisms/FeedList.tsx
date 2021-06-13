@@ -19,7 +19,7 @@ const FeedList: FC<Props> = ({ sourceId }) => {
   return (
     <div className="feedList">
       <SourceHeading source={source} />
-      {sources && (
+      {sources && feeds && (
         <div className="feedList__body">
           {feeds.map((feed, i) => (
             <Feed
