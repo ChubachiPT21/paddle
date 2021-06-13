@@ -6,7 +6,13 @@ type Props = {
 }
 
 const AddSource: FC<Props> = ({ onClick }) => (
-  <div onClick={onClick} onKeyDown={onClick} role="link" tabIndex={0}>
+  <div
+    onClick={onClick}
+    onKeyDown={onClick}
+    role="link"
+    tabIndex={0}
+    className="pointer"
+  >
     <img src={IconAddSource} alt="icon-add-source" />
   </div>
 )
