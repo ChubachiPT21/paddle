@@ -20,6 +20,8 @@ services:
     image: paddle_go
     stdin_open: true
     tty: true
+    environment:
+      HOST: ${FRONTEND_HOST}
     volumes:
       - .:/home/app:cached
     ports:

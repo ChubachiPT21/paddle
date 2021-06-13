@@ -65,12 +65,12 @@ func main() {
 }
 
 func CORS() gin.HandlerFunc {
-	var host = "localhost"
+	var host = "localhost:13000"
 	if os.Getenv("HOST") != "" {
 		host = os.Getenv("HOST")
 	}
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://"+host+":13000")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://"+host)
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "X-Requested-With, Origin, X-Csrftoken, Content-Type, Accept")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE, PATCH, HEAD")
