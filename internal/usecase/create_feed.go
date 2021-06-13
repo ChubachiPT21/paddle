@@ -32,10 +32,6 @@ func (CreateFeedStruct) CreateFeed(sourceID int64) error {
 	updateRepo := repository.NewUpdateRepository()
 	update, err := updateRepo.Find(sourceID)
 
-	if err != nil {
-		return err
-	}
-
 	var latestDateTime time.Time
 	if update != nil {
 		latestDateTime = update.FetchedAt

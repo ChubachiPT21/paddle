@@ -1,13 +1,22 @@
 import React, { FC } from 'react'
 
 type Props = {
-  title: string
+  className: string
   type: string
   placeholder: string
   onChange(value: any): void
+  onKeyDown?(value: any): void
+  title?: string
 }
 
-const Input: FC<Props> = ({ title, type, placeholder, onChange }) => {
+const Input: FC<Props> = ({
+  className,
+  type,
+  placeholder,
+  onChange,
+  onKeyDown,
+  title,
+}) => {
   return (
     <div>
       <div>
@@ -15,7 +24,8 @@ const Input: FC<Props> = ({ title, type, placeholder, onChange }) => {
       </div>
       <input
         onChange={onChange}
-        className="input"
+        onKeyDown={onKeyDown}
+        className={className}
         placeholder={placeholder}
         type={type}
       />

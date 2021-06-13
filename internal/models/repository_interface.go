@@ -35,5 +35,6 @@ type UpdateRepository interface {
 // UserRepository is an interface
 type UserRepository interface {
 	FindByToken(token string) (*orm.User, error)
+	FindByEmail(email string) (*orm.User, error)
 	Create(email string, encryptedPassword string, token string) error
 }
