@@ -37,3 +37,21 @@
     }
   }
 }
+
+.noContents {
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  &__eyecatch {
+    img {
+      width: 80%;
+    }
+  }
+
+  &__action {
+    margin-top: 40px;
+  }
+}
