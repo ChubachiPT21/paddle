@@ -28,6 +28,13 @@ interface IDeleteSourceSuccess extends Action {
   }
 }
 
+interface IDeleteSourceError extends Action {
+  type: SourceActionTypes.DELETE_SOURCE_ERROR
+  payload: {
+    error: Error
+  }
+}
+
 const fetchSourcesBegin = (): IFetchSourcesAction => ({
   type: SourceActionTypes.FETCH_SOURCES_START,
 })
@@ -50,6 +57,13 @@ const deleteSourceSuccess = (sourceID: number): IDeleteSourceSuccess => ({
   type: SourceActionTypes.DELETE_SOURCE_SUCESS,
   payload: {
     sourceID,
+  },
+})
+
+const deleteSourceError = (error: Error): IDeleteSourceError => ({
+  type: SourceActionTypes.DELETE_SOURCE_ERROR,
+  payload: {
+    error,
   },
 })
 
@@ -85,10 +99,8 @@ export const deleteSource = (sourceID: number) => {
       .then(() => {
         dispatch(deleteSourceSuccess(sourceID))
       })
-      .catch((e) => {
-        /* eslint-disable no-console */
-        console.error(e)
-        return false
+      .catch((error) => {
+        dispatch(deleteSourceError(error))
       })
   }
 }
@@ -98,3 +110,4 @@ export type SourceActions =
   | IFetchSourcesSuccess
   | IFetchSourcesError
   | IDeleteSourceSuccess
+  | IDeleteSourceError
