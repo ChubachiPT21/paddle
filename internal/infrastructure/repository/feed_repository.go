@@ -38,3 +38,13 @@ func (repo *feedRepository) Create(sourceID int64, item *gofeed.Item, imageURL s
 
 	return &feed, err
 }
+
+// sourceIDに紐づくfeedをすべて削除する
+func (repo *feedRepository) DeleteAll(sourceID int64) error {
+	feeds, err := repo.All(sourceID)
+	if err != nil {
+		return err
+	}
+	_, err = feeds.DeleteAll(context.Background(), database.DBCon)
+	return err
+}
