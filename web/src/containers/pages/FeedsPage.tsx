@@ -54,8 +54,8 @@ const FeedsPage: FC = () => {
     return (
       <DefaultTemplate defaultNavigation={HeaderNavigation.home}>
         <FeedTemplate>
-          {feeds.length > 0 && <FeedList sourceId={Number(id)} />}
-          {feeds.length === 0 && <NoSources />}
+          {feeds && feeds.length > 0 && <FeedList sourceId={Number(id)} />}
+          {feeds && feeds.length === 0 && <NoSources />}
         </FeedTemplate>
       </DefaultTemplate>
     )
