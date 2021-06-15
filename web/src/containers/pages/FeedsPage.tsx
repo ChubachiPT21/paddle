@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import FeedList from 'src/containers/organisms/FeedList'
+import NoSources from 'src/containers/organisms/NoSources'
 import { HeaderNavigation } from 'src/components/molecules/Header'
 import { fetchSources } from 'src/actions/sourceActions'
 import { fetchFeeds } from 'src/actions/feedActions'
@@ -54,6 +55,7 @@ const FeedsPage: FC = () => {
       <DefaultTemplate defaultNavigation={HeaderNavigation.home}>
         <FeedTemplate>
           {feeds.length > 0 && <FeedList sourceId={Number(id)} />}
+          {feeds.length === 0 && <NoSources />}
         </FeedTemplate>
       </DefaultTemplate>
     )
