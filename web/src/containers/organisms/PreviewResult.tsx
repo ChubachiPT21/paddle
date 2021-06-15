@@ -1,10 +1,10 @@
 import React, { FC } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router'
 import RedarSmall from 'src/images/RedarSmall.svg'
 import RedarError from 'src/images/RedarError.svg'
 import { ISource, IPreview, IRss } from 'src/type'
-import { createSource } from 'src/actions/sourceActions'
+import { createSource, deleteSource } from 'src/actions/sourceActions'
 import FollowButton from 'src/components/atoms/FollowButton'
 
 type Props = {
@@ -12,6 +12,7 @@ type Props = {
 }
 
 const PreviewResult: FC<Props> = ({ url }) => {
+  const dispatch = useDispatch()
   const history = useHistory()
   const preview = useSelector(
     (state: { search: { preview: IPreview } }) => state.search.preview
@@ -39,7 +40,11 @@ const PreviewResult: FC<Props> = ({ url }) => {
       const sourceId = await createSource(rss)
       history.push(`/sources/${sourceId}/feeds`)
     } else {
-      // TODO: Unfollow action
+      const sourceId = sources.find((s) => s.title === preview.title)?.id
+      if (sourceId) {
+        dispatch(deleteSource(sourceId))
+        isFollowing()
+      }
     }
   }
 
