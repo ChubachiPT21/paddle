@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 import { useHistory } from 'react-router'
 import IconNoSources from 'src/images/NoSources.svg'
 import PrimaryButton from 'src/components/atoms/PrimaryButton'
