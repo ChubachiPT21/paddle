@@ -47,11 +47,26 @@ func TestGetSourcesHandler_handle(t *testing.T) {
 		return orm.SourceSlice{}, nil
 	})
 
-	t.Run("return 200", func(t *testing.T) {
-		routeStruct := paddle.GetSources(mock)[0]
+	userID := int64(1)
+	userMock := models.NewMockUserRepository(ctrl)
+	userMock.EXPECT().FindByToken(gomock.Any()).DoAndReturn(func(_ string) (*orm.User, error) {
+		return &orm.User{ID: userID}, nil
+	})
 
+	t.Run("return 200", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
+		req, _ := http.NewRequest("GET", "/v1/sources", nil)
+		c.Request = req
+
+		store := cookie.NewStore([]byte("secret"))
+		handler := sessions.Sessions("paddleSession", store)
+		handler(c)
+
+		session := sessions.Default(c)
+		session.Set("token", "randomToken")
+
+		routeStruct := paddle.GetSources(mock, userMock)[0]
 
 		routeStruct.Handler(c)
 		assert.Equal(t, http.StatusOK, w.Result().StatusCode)

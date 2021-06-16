@@ -25,7 +25,8 @@ type getFeedsHandler struct {
 }
 
 type getSourcesHandler struct {
-	repo models.SourceRepository
+	repo       models.SourceRepository
+	userRepo   models.UserRepository
 }
 
 type createSourceHandler struct {
@@ -178,7 +179,18 @@ func (h *getFeedsHandler) preview(c *gin.Context) {
 }
 
 func (h *getSourcesHandler) handle(c *gin.Context) {
-	sources, err := h.repo.All()
+	token := sessions.Default(c).Get("token")
+	if token == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+	user, err := h.userRepo.FindByToken(token.(string))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+
+	sources, err := h.repo.All(user.ID)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
@@ -329,8 +341,8 @@ func GetPreview() routes.Routes {
 }
 
 // GetSources shows all sources
-func GetSources(repo models.SourceRepository) routes.Routes {
-	handler := getSourcesHandler{repo}
+func GetSources(repo models.SourceRepository, userRepo models.UserRepository) routes.Routes {
+	handler := getSourcesHandler{repo, userRepo}
 
 	return routes.Routes{
 		{
