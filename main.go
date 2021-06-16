@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-
+	"net/http"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -22,6 +22,7 @@ func main() {
 	r.Use(CORS())
 
 	store := cookie.NewStore([]byte("secret"))
+	store.Options(sessions.Options{SameSite: http.SameSiteNoneMode, Secure: true})
 	r.Use(sessions.Sessions("paddleSession", store))
 
 	v1 := r.Group("/v1")
