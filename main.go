@@ -35,7 +35,7 @@ func main() {
 	)
 	routes.AddRoutes(
 		v1,
-		paddle.GetSources(repository.NewSourceRepository())...,
+		paddle.GetSources(repository.NewSourceRepository(), repository.NewUserRepository())...,
 	)
 	routes.AddRoutes(
 		v1,

@@ -141,7 +141,7 @@ func (m *MockSourceRepository) EXPECT() *MockSourceRepositoryMockRecorder {
 }
 
 // All mocks base method.
-func (m *MockSourceRepository) All() (orm.SourceSlice, error) {
+func (m *MockSourceRepository) All(userID int64) (orm.SourceSlice, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "All")
 	ret0, _ := ret[0].(orm.SourceSlice)

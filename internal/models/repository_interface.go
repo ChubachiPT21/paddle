@@ -22,7 +22,7 @@ type FeedRepository interface {
 // SourceRepository is an interface
 type SourceRepository interface {
 	Find(sourceID int64) (*orm.Source, error)
-	All() (orm.SourceSlice, error)
+	All(userID int64) (orm.SourceSlice, error)
 	Create(source *orm.Source) error
 	Delete(sourceID int64) error
 }
