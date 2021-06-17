@@ -9,6 +9,7 @@ type Props = {
 
 const Home: FC<Props> = ({ isActive, onClick }) => (
   <div
+    id="navigation-home"
     className={isActive ? 'navigation navigation--active' : 'navigation'}
     onClick={onClick}
     onKeyDown={onClick}

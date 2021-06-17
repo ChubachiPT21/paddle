@@ -9,6 +9,7 @@ type Props = {
 
 const Explore: FC<Props> = ({ isActive, onClick }) => (
   <div
+    id="navigation-explore"
     className={isActive ? 'navigation navigation--active' : 'navigation'}
     onClick={onClick}
     onKeyDown={onClick}
