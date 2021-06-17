@@ -1,6 +1,5 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 
 import SourceInList from 'src/components/molecules/SourceInList'
 import { ISource } from 'src/type'
