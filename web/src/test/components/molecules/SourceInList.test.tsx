@@ -10,8 +10,8 @@ const source: ISource = {
   count: 5,
 }
 
-describe('molecules/HeaderRightMenu', () => {
-  test('should have no right-menu items', () => {
+describe('molecules/SourceInList', () => {
+  test('should fire click and events', () => {
     const onClick = jest.fn()
     render(<SourceInList source={source} onClick={onClick} />)
 
