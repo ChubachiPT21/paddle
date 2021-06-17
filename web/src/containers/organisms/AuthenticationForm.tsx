@@ -5,6 +5,7 @@ import PrimaryButton from 'src/components/atoms/PrimaryButton'
 import { signIn, signUp } from 'src/actions/authenticationActions'
 import { IAuthentication } from 'src/type'
 import { AuthType } from 'src/containers/pages/AuthenticationPage'
+import AuthError from 'src/components/atoms/AuthError'
 
 type Props = {
   authType: AuthType
@@ -49,6 +50,7 @@ const AuthenticationForm: FC<Props> = ({ authType }) => {
         />
         <div className="sign__button">
           <PrimaryButton buttonName={title} onClick={onClick} />
+          <AuthError />
         </div>
       </div>
     </div>
