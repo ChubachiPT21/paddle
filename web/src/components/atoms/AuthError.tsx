@@ -8,9 +8,7 @@ const AuthError: FC = () => {
   )
 
   if (authenticationError) {
-    return (
-      <div className="auth-error">Email or password is invalid</div>
-    )
+    return <div className="auth-error">Email or password is invalid</div>
   }
   return <div />
 }
