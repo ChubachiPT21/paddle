@@ -4,7 +4,7 @@ import { IUserState } from 'src/reducers/userReducers'
 
 const AuthError: FC = () => {
   const authenticationError = useSelector(
-    (state: { user: IUserState }) => state.user.error
+    (state: { user: IUserState }) => state.user.signError
   )
 
   if (authenticationError) {

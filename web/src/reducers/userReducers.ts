@@ -3,11 +3,13 @@ import { AuthenticationAction } from 'src/actions/authenticationActions'
 
 export interface IUserState {
   error: boolean
+  signError: boolean
   user: IUser
 }
 
 const initialState: IUserState = {
   error: false,
+  signError: false,
   user: {
     email: '',
     token: '',
@@ -27,7 +29,13 @@ const reducer = (
       return {
         ...state,
         user: action.payload.user,
+        signError: false,
         error: false,
+      }
+    case AuthenticationActionTypes.AUTHENTICATION_SIGN_ERROR:
+      return {
+        ...state,
+        signError: true,
       }
     case AuthenticationActionTypes.AUTHENTICATION_ERROR:
       return {
