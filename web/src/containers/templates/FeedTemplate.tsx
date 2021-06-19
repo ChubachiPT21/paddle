@@ -21,9 +21,6 @@ const FeedTemplate: FC = ({ children }) => {
                 <img src={IconAll} alt="icon-all" />
                 <span>ALL FEEDS</span>
               </div>
-              <div className="allFeeds__count">
-                <span>40</span>
-              </div>
             </div>
             <SourceList />
           </div>
