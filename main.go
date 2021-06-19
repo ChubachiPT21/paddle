@@ -1,8 +1,9 @@
 package main
 
 import (
-	"os"
 	"net/http"
+	"os"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -44,7 +45,7 @@ func main() {
 	)
 	routes.AddRoutes(
 		v1,
-		paddle.CreateFeeds(usecase.NewCreateFeedStruct())...,
+		paddle.CreateFeeds(usecase.NewCreateFeedStruct(), repository.NewUserRepository(), repository.NewSourceRepository())...,
 	)
 	routes.AddRoutes(
 		v1,
