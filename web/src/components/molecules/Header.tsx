@@ -5,6 +5,7 @@ import Home from 'src/components/atoms/Home'
 import RssIcon from 'src/images/RssIcon.svg'
 import { useHistory } from 'react-router'
 import { IUser } from 'src/type'
+import { createFeeds } from 'src/actions/feedActions'
 
 export enum HeaderNavigation {
   home = 'home',
@@ -28,7 +29,10 @@ const Header: FC<Props> = ({ user, currentNavigation }) => {
       <div className="header__navigation">
         <Home
           isActive={currentNavigation === HeaderNavigation.home}
-          onClick={() => history.push('/')}
+          onClick={() => {
+            createFeeds()
+            history.push('/')
+          }}
         />
         <Explore
           isActive={currentNavigation === HeaderNavigation.explore}

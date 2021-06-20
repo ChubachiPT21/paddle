@@ -53,6 +53,10 @@ export const fetchFeeds = (sourceId: number) => {
   }
 }
 
+export const createFeeds = () => {
+  return feedsRequest.createFeeds()
+}
+
 export type FeedActions =
   | IFetchFeedsAction
   | IFetchFeedsSuccess
