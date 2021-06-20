@@ -1,14 +1,17 @@
 import React, { FC } from 'react'
 
 type Props = {
-  className: string
-  buttonName: string
+  isFollowing: boolean
   onClick(): void
 }
 
-const FollowButton: FC<Props> = ({ className, buttonName, onClick }) => (
-  <button onClick={onClick} className={className} type="button">
-    {buttonName}
+const FollowButton: FC<Props> = ({ isFollowing, onClick }) => (
+  <button
+    onClick={onClick}
+    className={isFollowing ? 'search__btnFollowing' : 'search__btnFollow'}
+    type="button"
+  >
+    {isFollowing ? 'FOLLOWING' : 'FOLLOW'}
   </button>
 )
 

@@ -25,10 +25,22 @@ func (repo *sourceRepository) Find(sourceID int64) (*orm.Source, error) {
 	).One(context.Background(), database.DBCon)
 }
 
-func (repo *sourceRepository) All() (orm.SourceSlice, error) {
-	return orm.Sources().All(context.Background(), database.DBCon)
+func (repo *sourceRepository) All(userID int64) (orm.SourceSlice, error) {
+	return orm.Sources(
+		Where("user_id = ?", userID),
+	).All(context.Background(), database.DBCon)
 }
 
 func (repo *sourceRepository) Create(source *orm.Source) error {
 	return source.Insert(context.Background(), database.DBCon, boil.Infer())
+}
+
+// sourceIDで指定されたsourceを削除する
+func (repo *sourceRepository) Delete(sourceID int64) error {
+	source, err := repo.Find(sourceID)
+	if err != nil {
+		return err
+	}
+	_, err = source.Delete(context.Background(), database.DBCon)
+	return err
 }

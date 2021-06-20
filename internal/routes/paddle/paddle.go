@@ -25,7 +25,8 @@ type getFeedsHandler struct {
 }
 
 type getSourcesHandler struct {
-	repo models.SourceRepository
+	repo       models.SourceRepository
+	userRepo   models.UserRepository
 }
 
 type createSourceHandler struct {
@@ -53,6 +54,12 @@ type signoutHandler struct {
 
 type getAuthenticationHandler struct {
 	repo models.UserRepository
+}
+
+type unfollowHandler struct {
+	userRepo   models.UserRepository
+	sourceRepo models.SourceRepository
+	feedRepo   models.FeedRepository
 }
 
 type previewRequest struct {
@@ -182,7 +189,18 @@ func (h *getFeedsHandler) preview(c *gin.Context) {
 }
 
 func (h *getSourcesHandler) handle(c *gin.Context) {
-	sources, err := h.repo.All()
+	token := sessions.Default(c).Get("token")
+	if token == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+	user, err := h.userRepo.FindByToken(token.(string))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+
+	sources, err := h.repo.All(user.ID)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
@@ -193,9 +211,15 @@ func (h *getSourcesHandler) handle(c *gin.Context) {
 }
 
 func (h *createSourceHandler) receive(c *gin.Context) {
-	source := orm.Source{
-		UserID: 1,
+	fmt.Println(c.Param("testMode"))
+	session := sessions.Default(c)
+	v := session.Get("token")
+	if v == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
 	}
+
+	source := orm.Source{}
 	err := c.Bind(&source)
 	if err != nil {
 		fmt.Println(err)
@@ -203,13 +227,13 @@ func (h *createSourceHandler) receive(c *gin.Context) {
 		return
 	}
 
-	err = h.usecase.CreateSource(&source)
+	err = h.usecase.CreateSource(v.(string), &source)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
 	}
 
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusOK, gin.H{"sourceID": source.ID})
 }
 
 func (h *createFeedsHandler) receive(c *gin.Context) {
@@ -245,6 +269,61 @@ func (h *createInterestHandler) receive(c *gin.Context) {
 	}
 }
 
+// 指定されたidのsourceとそれに関連するfeedを削除
+func (h *unfollowHandler) unfollow(c *gin.Context) {
+	// ログイン状態の確認：sessionはtokenを持っているか？
+	token := sessions.Default(c).Get("token")
+	if token == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+
+	// ログイン状態の確認：そのtokenを持っているユーザは存在するか？
+	user, err := h.userRepo.FindByToken(token.(string))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+
+	// sourceの確認：パラメータから削除するidを取得
+	sourceID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+
+	// sourceの確認：そのidは登録されているか？
+	source, err := h.sourceRepo.Find(sourceID)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, nil)
+		return
+	}
+
+	// sourceの確認：指定されたidは現在のユーザのものか？
+	if source.UserID != user.ID {
+		c.JSON(http.StatusUnprocessableEntity, nil)
+		return
+	}
+
+	// 関連するfeedの削除
+	err = h.feedRepo.DeleteAll(sourceID)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+
+	// sourceの削除
+	err = h.sourceRepo.Delete(sourceID)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, nil)
+	} else {
+		c.JSON(http.StatusOK, nil)
+	}
+}
+
 // GetFeeds fetches all feeds from sourceID
 func GetFeeds(repo models.FeedRepository) routes.Routes {
 	handler := getFeedsHandler{repo}
@@ -272,8 +351,8 @@ func GetPreview() routes.Routes {
 }
 
 // GetSources shows all sources
-func GetSources(repo models.SourceRepository) routes.Routes {
-	handler := getSourcesHandler{repo}
+func GetSources(repo models.SourceRepository, userRepo models.UserRepository) routes.Routes {
+	handler := getSourcesHandler{repo, userRepo}
 
 	return routes.Routes{
 		{
@@ -372,6 +451,19 @@ func GetAuthentication(repo models.UserRepository) routes.Routes {
 			Path:    "/authentication",
 			Method:  http.MethodGet,
 			Handler: handler.handle,
+		},
+	}
+}
+
+// Unfollow delete a source and related feeds
+func Unfollow(userRepo models.UserRepository, sourceRepo models.SourceRepository, feedRepo models.FeedRepository) routes.Routes {
+	handler := unfollowHandler{userRepo, sourceRepo, feedRepo}
+
+	return routes.Routes{
+		{
+			Path:    "/sources/:id",
+			Method:  http.MethodDelete,
+			Handler: handler.unfollow,
 		},
 	}
 }

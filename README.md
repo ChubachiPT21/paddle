@@ -46,7 +46,7 @@ $ make dc-migrate
 
 **Insert demo data**
 ```
-$ docker exec -it paddle_go_1 sh -c "mysql -h paddle_db_1 -u apuser -ppassword -D paddle < scripts/demodata.sql
+$ docker exec -it paddle_go_1 sh -c "mysql -h paddle_db_1 -u apuser -ppassword -D paddle < scripts/demodata.sql"
 ```
 
 **Create a migration file**

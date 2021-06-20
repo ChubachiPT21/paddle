@@ -15,11 +15,11 @@ const FeedList: FC<Props> = ({ sourceId }) => {
   const feeds = useSelector(
     (state: { feed: { feeds: IFeed[] } }) => state.feed.feeds
   )
-  const source = sources.find((s) => s.id === sourceId)
+  const source = sources && sources.find((s) => s.id === sourceId)
   return (
     <div className="feedList">
       <SourceHeading source={source} />
-      {sources && (
+      {sources && feeds && (
         <div className="feedList__body">
           {feeds.map((feed, i) => (
             <Feed

@@ -10,10 +10,14 @@ const HeaderRightMenu: FC<Props> = ({ user }) => (
     {user.token && <span>Welcome! {user.email}</span>}
     {!user.token && (
       <>
-        <a href="/signin" className="rightMenu__item">
+        <a id="right-menu-sign-in" href="/signin" className="rightMenu__item">
           Sign In
         </a>
-        <a href="/signup" className="rightMenu__item rightMenu__item--border">
+        <a
+          id="right-menu-sign-up"
+          href="/signup"
+          className="rightMenu__item rightMenu__item--border"
+        >
           Sign Up
         </a>
       </>

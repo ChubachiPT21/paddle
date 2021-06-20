@@ -22,6 +22,13 @@ export type IUser = {
   email: string
   token: string
 }
+export type IPreview = {
+  title: string
+}
+export type IRss = {
+  url: string
+  title: string
+}
 
 export enum FeedActionTypes {
   FETCH_FEEDS_START = '@@feeds/FETCH_FEEDS_START',
@@ -33,6 +40,8 @@ export enum SourceActionTypes {
   FETCH_SOURCES_START = '@@sources/FETCH_SOURCES_START',
   FETCH_SOURCES_SUCCESS = '@@sources/FETCH_SOURCES_SUCCESS',
   FETCH_SOURCES_ERROR = '@@sources/FETCH_SOURCES_ERROR',
+  DELETE_SOURCE_SUCESS = '@@sources/DELETE_SOURCE_SUCESS',
+  DELETE_SOURCE_ERROR = '@@sources/DELETE_SOURCE_ERROR',
 }
 
 export enum AuthenticationActionTypes {
