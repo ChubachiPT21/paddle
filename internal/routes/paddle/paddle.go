@@ -25,8 +25,8 @@ type getFeedsHandler struct {
 }
 
 type getSourcesHandler struct {
-	repo       models.SourceRepository
-	userRepo   models.UserRepository
+	repo     models.SourceRepository
+	userRepo models.UserRepository
 }
 
 type createSourceHandler struct {
@@ -34,7 +34,9 @@ type createSourceHandler struct {
 }
 
 type createFeedsHandler struct {
-	feed usecase.CreateFeedInterface
+	usecase    usecase.CreateFeedInterface
+	userRepo   models.UserRepository
+	sourceRepo models.SourceRepository
 }
 
 type createInterestHandler struct {
@@ -211,7 +213,6 @@ func (h *getSourcesHandler) handle(c *gin.Context) {
 }
 
 func (h *createSourceHandler) receive(c *gin.Context) {
-	fmt.Println(c.Param("testMode"))
 	session := sessions.Default(c)
 	v := session.Get("token")
 	if v == nil {
@@ -237,20 +238,32 @@ func (h *createSourceHandler) receive(c *gin.Context) {
 }
 
 func (h *createFeedsHandler) receive(c *gin.Context) {
-	sourceID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	token := sessions.Default(c).Get("token")
+	if token == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+	user, err := h.userRepo.FindByToken(token.(string))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+
+	sources, err := h.sourceRepo.All(user.ID)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
-
-	err = h.feed.CreateFeed(sourceID)
-	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusInternalServerError, nil)
-	} else {
-		c.JSON(http.StatusOK, nil)
+	for _, source := range sources {
+		err = h.usecase.CreateFeed(source.ID)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Feeds for sourceID: " + strconv.FormatInt(source.ID, 10) + " has been created.")
+		}
 	}
+	c.JSON(http.StatusOK, nil)
 }
 
 func (h *createInterestHandler) receive(c *gin.Context) {
@@ -376,13 +389,13 @@ func CreateSource(usecase usecase.CreateSourceInterface) routes.Routes {
 	}
 }
 
-// CreateFeeds creates feeds based on the source id
-func CreateFeeds(feed usecase.CreateFeedInterface) routes.Routes {
-	handler := createFeedsHandler{feed}
+// CreateFeeds creates feeds for all sources
+func CreateFeeds(usecase usecase.CreateFeedInterface, userRepo models.UserRepository, sourceRepo models.SourceRepository) routes.Routes {
+	handler := createFeedsHandler{usecase, userRepo, sourceRepo}
 
 	return routes.Routes{
 		{
-			Path:    "/sources/:id/feeds",
+			Path:    "/feeds",
 			Method:  http.MethodPost,
 			Handler: handler.receive,
 		},

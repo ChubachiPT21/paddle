@@ -128,18 +128,38 @@ func TestCreateFeedsHandler_receive(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mock := usecase.NewMockCreateFeedInterface(ctrl)
-	mock.EXPECT().CreateFeed(gomock.Any()).DoAndReturn(func(_ int64) error {
+	usecaseMock := usecase.NewMockCreateFeedInterface(ctrl)
+	usecaseMock.EXPECT().CreateFeed(gomock.Any()).DoAndReturn(func(_ int64) error {
 		return nil
 	})
 
-	t.Run("return 200", func(t *testing.T) {
+	userID := int64(1)
+	userMock := models.NewMockUserRepository(ctrl)
+	userMock.EXPECT().FindByToken(gomock.Any()).DoAndReturn(func(_ string) (*orm.User, error) {
+		return &orm.User{ID: userID}, nil
+	})
 
-		routeStruct := paddle.CreateFeeds(mock)[0]
+	sourceMock := models.NewMockSourceRepository(ctrl)
+	sourceMock.EXPECT().All().DoAndReturn(func() (orm.SourceSlice, error) {
+		slice := orm.SourceSlice{}
+		sourceSlice := append(slice, &orm.Source{ID: 1, Title: "test source", UserID: 1, URL: "url"})
+		return sourceSlice, nil
+	})
+
+	t.Run("return 200", func(t *testing.T) {
+		routeStruct := paddle.CreateFeeds(usecaseMock, userMock, sourceMock)[0]
 
 		w := httptest.NewRecorder()
 		c, _ := gin.CreateTestContext(w)
-		c.Params = gin.Params{gin.Param{Key: "id", Value: "1"}}
+		req, _ := http.NewRequest("POST", "/v1/sources/feeds", nil)
+		c.Request = req
+
+		store := cookie.NewStore([]byte("secret"))
+		handler := sessions.Sessions("paddleSession", store)
+		handler(c)
+
+		session := sessions.Default(c)
+		session.Set("token", "適当なトークン")
 
 		routeStruct.Handler(c)
 		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
