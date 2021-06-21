@@ -61,6 +61,10 @@ func main() {
 	)
 	routes.AddRoutes(
 		v1,
+		paddle.Signout()...,
+	)
+	routes.AddRoutes(
+		v1,
 		paddle.GetAuthentication(repository.NewUserRepository())...,
 	)
 	routes.AddRoutes(

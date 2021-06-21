@@ -51,6 +51,9 @@ type signinHandler struct {
 	repo models.UserRepository
 }
 
+type signoutHandler struct {
+}
+
 type getAuthenticationHandler struct {
 	repo models.UserRepository
 }
@@ -147,6 +150,13 @@ func (h *signinHandler) receive(c *gin.Context) {
 		session.Save()
 		c.JSON(http.StatusOK, gin.H{"token": user.Token.String, "email": user.Email})
 	}
+}
+
+func (h *signoutHandler) receive(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+	c.JSON(http.StatusOK, nil)
 }
 
 func (h *getFeedsHandler) handle(c *gin.Context) {
@@ -425,6 +435,20 @@ func Signin(repo models.UserRepository) routes.Routes {
 	return routes.Routes{
 		{
 			Path:    "/signin",
+			Method:  http.MethodPost,
+			Handler: handler.receive,
+		},
+	}
+}
+
+// Signout verifies a user and set a session
+func Signout() routes.Routes {
+
+	handler := new(signoutHandler)
+
+	return routes.Routes{
+		{
+			Path:    "/signout",
 			Method:  http.MethodPost,
 			Handler: handler.receive,
 		},
