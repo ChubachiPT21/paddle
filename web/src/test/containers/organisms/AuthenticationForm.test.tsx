@@ -1,6 +1,5 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { useDispatch } from 'react-redux'
 import { AuthType } from 'src/containers/pages/AuthenticationPage'
 import AuthenticationForm from 'src/containers/organisms/AuthenticationForm'
 
