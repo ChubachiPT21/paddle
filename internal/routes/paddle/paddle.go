@@ -107,8 +107,8 @@ func (h *signupHandler) receive(c *gin.Context) {
 	var authenticationRequest authenticationRequest
 	c.BindJSON(&authenticationRequest)
 
-	emailErr := validation.Validate(authentication.Email, is.Email)
-	passwordErr := validation.Validate(authentication.Password, validation.Required)
+	emailErr := validation.Validate(authenticationRequest.Email, is.Email)
+	passwordErr := validation.Validate(authenticationRequest.Password, validation.Required)
 	if emailErr != nil || passwordErr != nil {
 		c.JSON(http.StatusUnauthorized, nil)
 		return

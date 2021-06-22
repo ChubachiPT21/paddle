@@ -3,6 +3,7 @@ module github.com/ChubachiPT21/paddle
 go 1.15
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/cespare/reflex v0.3.0 // indirect
 	github.com/friendsofgo/errors v0.9.2
 	github.com/gin-contrib/cors v1.3.1
