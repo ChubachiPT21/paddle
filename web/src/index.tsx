@@ -36,6 +36,13 @@ ReactDOM.render(
               <AuthenticationPage authType={AuthType.SIGNUP} {...props} />
             )}
           />
+          <Route
+            exact
+            path="/signout"
+            render={(props) => (
+              <AuthenticationPage authType={AuthType.SIGNOUT} {...props} />
+            )}
+          />
         </Switch>
       </Router>
     </React.StrictMode>
