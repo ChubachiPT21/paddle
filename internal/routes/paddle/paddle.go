@@ -18,6 +18,8 @@ import (
 	"github.com/ChubachiPT21/paddle/internal/usecase"
 	"github.com/ChubachiPT21/paddle/pkg/orm"
 	"github.com/ChubachiPT21/paddle/pkg/routes"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 )
 
 type getFeedsHandler struct {
@@ -104,6 +106,14 @@ func (h *signupHandler) receive(c *gin.Context) {
 
 	var authenticationRequest authenticationRequest
 	c.BindJSON(&authenticationRequest)
+
+	emailErr := validation.Validate(authentication.Email, is.Email)
+	passwordErr := validation.Validate(authentication.Password, validation.Required)
+	if emailErr != nil || passwordErr != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte(authenticationRequest.Password), 10)
 
 	data := make([]byte, 10)
