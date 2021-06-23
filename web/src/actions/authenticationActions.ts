@@ -67,16 +67,8 @@ export const signIn = (authenticationInput: IAuthentication) => {
 }
 
 export const signOut = () => {
-  return (dispatch: Dispatch) => {
-    dispatch(authenticationStart())
-    return authenticationRequest
-      .signOut()
-      .then((res) => {
-        dispatch(authenticationSuccess(res.data))
-      })
-      .catch((error) => {
-        dispatch(authenticationError(error))
-      })
+  return () => {
+    return authenticationRequest.signOut()
   }
 }
 
