@@ -91,16 +91,23 @@ func (h *getAuthenticationHandler) handle(c *gin.Context) {
 	}
 }
 
+func hasToken(c *gin.Context, repo models.UserRepository) bool {
+	v := sessions.Default(c).Get("token")
+	if v == nil {
+		return false
+	}
+
+	user, err := repo.FindByToken(v.(string))
+	if err != nil || user == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+	} else {
+		c.JSON(http.StatusOK, gin.H{"token": v, "email": user.Email})
+	}
+	return true
+}
+
 func (h *signupHandler) receive(c *gin.Context) {
-	session := sessions.Default(c)
-	v := session.Get("token")
-	if v != nil {
-		user, err := h.repo.FindByToken(v.(string))
-		if err != nil || user == nil {
-			c.JSON(http.StatusUnauthorized, nil)
-		} else {
-			c.JSON(http.StatusOK, gin.H{"token": v, "email": user.Email})
-		}
+	if hasToken(c, h.repo) {
 		return
 	}
 
@@ -129,6 +136,7 @@ func (h *signupHandler) receive(c *gin.Context) {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
 	} else {
+		session := sessions.Default(c)
 		session.Set("token", token)
 		session.Save()
 		c.JSON(http.StatusOK, gin.H{"token": token, "email": authenticationRequest.Email})
@@ -136,15 +144,7 @@ func (h *signupHandler) receive(c *gin.Context) {
 }
 
 func (h *signinHandler) receive(c *gin.Context) {
-	session := sessions.Default(c)
-	v := session.Get("token")
-	if v != nil {
-		user, err := h.repo.FindByToken(v.(string))
-		if err != nil || user == nil {
-			c.JSON(http.StatusUnauthorized, nil)
-		} else {
-			c.JSON(http.StatusOK, gin.H{"token": v, "email": user.Email})
-		}
+	if hasToken(c, h.repo) {
 		return
 	}
 
@@ -162,6 +162,7 @@ func (h *signinHandler) receive(c *gin.Context) {
 	if err != nil || user == nil || bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword.String), []byte(authenticationRequest.Password)) != nil {
 		c.JSON(http.StatusUnauthorized, nil)
 	} else {
+		session := sessions.Default(c)
 		session.Set("email", user.Email)
 		session.Set("token", user.Token.String)
 		session.Save()
