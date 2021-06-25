@@ -106,18 +106,26 @@ func hasToken(c *gin.Context, repo models.UserRepository) bool {
 	return true
 }
 
+func validateEmailPassword(c *gin.Context) (authenticationRequest authenticationRequest, valid bool) {
+	valid = true
+	c.BindJSON(&authenticationRequest)
+
+	emailError := validation.Validate(authenticationRequest.Email, is.Email)
+	passwordError := validation.Validate(authenticationRequest.Password, validation.Required)
+	if emailError != nil || passwordError != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		valid = false
+	}
+	return
+}
+
 func (h *signupHandler) receive(c *gin.Context) {
 	if hasToken(c, h.repo) {
 		return
 	}
 
-	var authenticationRequest authenticationRequest
-	c.BindJSON(&authenticationRequest)
-
-	emailErr := validation.Validate(authenticationRequest.Email, is.Email)
-	passwordErr := validation.Validate(authenticationRequest.Password, validation.Required)
-	if emailErr != nil || passwordErr != nil {
-		c.JSON(http.StatusUnauthorized, nil)
+	authenticationRequest, valid := validateEmailPassword(c)
+	if !valid {
 		return
 	}
 
@@ -148,13 +156,8 @@ func (h *signinHandler) receive(c *gin.Context) {
 		return
 	}
 
-	var authenticationRequest authenticationRequest
-	c.BindJSON(&authenticationRequest)
-
-	emailErr := validation.Validate(authenticationRequest.Email, is.Email)
-	passwordErr := validation.Validate(authenticationRequest.Password, validation.Required)
-	if emailErr != nil || passwordErr != nil {
-		c.JSON(http.StatusUnauthorized, nil)
+	authenticationRequest, valid := validateEmailPassword(c)
+	if !valid {
 		return
 	}
 
