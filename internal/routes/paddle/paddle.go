@@ -151,6 +151,13 @@ func (h *signinHandler) receive(c *gin.Context) {
 	var authenticationRequest authenticationRequest
 	c.BindJSON(&authenticationRequest)
 
+	emailErr := validation.Validate(authenticationRequest.Email, is.Email)
+	passwordErr := validation.Validate(authenticationRequest.Password, validation.Required)
+	if emailErr != nil || passwordErr != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
+
 	user, err := h.repo.FindByEmail(authenticationRequest.Email)
 	if err != nil || user == nil || bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword.String), []byte(authenticationRequest.Password)) != nil {
 		c.JSON(http.StatusUnauthorized, nil)
