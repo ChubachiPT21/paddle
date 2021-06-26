@@ -2,7 +2,6 @@ import React, { FC } from 'react'
 import { signOut } from 'src/actions/authenticationActions'
 import { IUser } from 'src/type'
 import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router'
 
 type Props = {
   user: IUser
@@ -10,11 +9,10 @@ type Props = {
 
 const HeaderRightMenu: FC<Props> = ({ user }) => {
   const dispatch = useDispatch()
-  const history = useHistory()
 
   const onClick = async () => {
     await dispatch(signOut())
-    history.push('/signin')
+    window.location.href = '/signin'
   }
 
   return (
