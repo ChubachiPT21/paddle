@@ -34,6 +34,8 @@ const reducer = (
         ...state,
         error: true,
       }
+    case AuthenticationActionTypes.AUTHENTICATION_CLEAR:
+      return initialState
     default: {
       return state
     }
