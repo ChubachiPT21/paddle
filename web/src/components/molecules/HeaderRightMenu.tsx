@@ -2,20 +2,28 @@ import React, { FC } from 'react'
 import { signOut } from 'src/actions/authenticationActions'
 import { IUser } from 'src/type'
 import { useDispatch } from 'react-redux'
+import { Provider } from 'react-redux'
+import store from '../../store'
+
+
 
 type Props = {
   user: IUser
 }
 
 const HeaderRightMenu: FC<Props> = ({ user }) => {
-  const dispatch = useDispatch()
 
   const onClick = async () => {
+    const dispatch = useDispatch()
     await dispatch(signOut())
     window.location.href = '/signin'
   }
 
+  const configuredStore = store
+
+
   return (
+    <Provider store={configuredStore}>
     <div className="rightMenu">
       {user.token && (
         <span>
@@ -47,6 +55,7 @@ const HeaderRightMenu: FC<Props> = ({ user }) => {
         </>
       )}
     </div>
+    </Provider>
   )
 }
 
