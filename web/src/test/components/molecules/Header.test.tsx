@@ -1,8 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
+import { useDispatch } from 'react-redux'
 
 import Header, { HeaderNavigation } from 'src/components/molecules/Header'
 import { IUser } from 'src/type'
+
+jest.mock('react-redux')
 
 const user: IUser = {
   token: 'token',
@@ -10,6 +13,10 @@ const user: IUser = {
 }
 
 describe('molecules/Header', () => {
+  beforeEach(() => {
+    useDispatch.mockReturnValue(jest.fn())
+  })
+
   test('should have an active home button and no right-menu items', () => {
     render(<Header user={user} currentNavigation={HeaderNavigation.home} />)
 
