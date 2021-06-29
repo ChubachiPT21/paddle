@@ -20,6 +20,10 @@ interface IAuthenticationError extends Action {
   }
 }
 
+interface IAuthenticationClear extends Action {
+  type: AuthenticationActionTypes.AUTHENTICATION_CLEAR
+}
+
 const authenticationStart = (): IAuthenticationAction => ({
   type: AuthenticationActionTypes.AUTHENTICATION_START,
 })
@@ -36,6 +40,10 @@ const authenticationError = (error: Error): IAuthenticationError => ({
   payload: {
     error,
   },
+})
+
+const authenticationClear = (): IAuthenticationClear => ({
+  type: AuthenticationActionTypes.AUTHENTICATION_CLEAR,
 })
 
 export const signUp = (authenticationInput: IAuthentication) => {
@@ -67,8 +75,16 @@ export const signIn = (authenticationInput: IAuthentication) => {
 }
 
 export const signOut = () => {
-  return () => {
-    return authenticationRequest.signOut()
+  return (dispatch: Dispatch) => {
+    dispatch(authenticationStart())
+    return authenticationRequest
+      .signOut()
+      .then(() => {
+        dispatch(authenticationClear())
+      })
+      .catch((error) => {
+        dispatch(authenticationError(error))
+      })
   }
 }
 
@@ -94,3 +110,4 @@ export type AuthenticationAction =
   | IAuthenticationAction
   | IAuthenticationSuccess
   | IAuthenticationError
+  | IAuthenticationClear

@@ -1,8 +1,10 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-
+import { useDispatch } from 'react-redux'
 import HeaderRightMenu from 'src/components/molecules/HeaderRightMenu'
 import { IUser } from 'src/type'
+
+jest.mock('react-redux')
 
 const user: IUser = {
   token: 'token',
@@ -10,6 +12,10 @@ const user: IUser = {
 }
 
 describe('molecules/HeaderRightMenu', () => {
+  beforeEach(() => {
+    useDispatch.mockReturnValue(jest.fn())
+  })
+
   test('should have no right-menu items', () => {
     render(<HeaderRightMenu user={user} />)
 
