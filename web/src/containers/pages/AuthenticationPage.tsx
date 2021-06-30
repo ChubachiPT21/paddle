@@ -10,6 +10,7 @@ import { getAuthentication } from 'src/actions/authenticationActions'
 export enum AuthType {
   SIGNUP = 'SIGNUP',
   SIGNIN = 'SIGNIN',
+  SIGNOUT = 'SIGNOUT',
 }
 
 type Props = {

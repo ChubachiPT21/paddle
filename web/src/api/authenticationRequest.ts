@@ -14,6 +14,9 @@ const authenticationRequest = {
       password: user.password,
     })
   },
+  signOut: () => {
+    return axios.post<any>(`/v1/signout`)
+  },
   getAuthentication: () => {
     return axios.get<IUser>(`/v1/authentication`)
   },
