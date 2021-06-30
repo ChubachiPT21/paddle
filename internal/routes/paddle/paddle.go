@@ -18,6 +18,8 @@ import (
 	"github.com/ChubachiPT21/paddle/internal/usecase"
 	"github.com/ChubachiPT21/paddle/pkg/orm"
 	"github.com/ChubachiPT21/paddle/pkg/routes"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 )
 
 type getFeedsHandler struct {
@@ -89,21 +91,44 @@ func (h *getAuthenticationHandler) handle(c *gin.Context) {
 	}
 }
 
+func hasToken(c *gin.Context, repo models.UserRepository) bool {
+	v := sessions.Default(c).Get("token")
+	if v == nil {
+		return false
+	}
+
+	user, err := repo.FindByToken(v.(string))
+	if err != nil || user == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+	} else {
+		c.JSON(http.StatusOK, gin.H{"token": v, "email": user.Email})
+	}
+	return true
+}
+
+func validateEmailPassword(c *gin.Context) (authenticationRequest authenticationRequest, valid bool) {
+	valid = true
+	c.BindJSON(&authenticationRequest)
+
+	emailError := validation.Validate(authenticationRequest.Email, is.Email)
+	passwordError := validation.Validate(authenticationRequest.Password, validation.Required)
+	if emailError != nil || passwordError != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		valid = false
+	}
+	return
+}
+
 func (h *signupHandler) receive(c *gin.Context) {
-	session := sessions.Default(c)
-	v := session.Get("token")
-	if v != nil {
-		user, err := h.repo.FindByToken(v.(string))
-		if err != nil || user == nil {
-			c.JSON(http.StatusUnauthorized, nil)
-		} else {
-			c.JSON(http.StatusOK, gin.H{"token": v, "email": user.Email})
-		}
+	if hasToken(c, h.repo) {
 		return
 	}
 
-	var authenticationRequest authenticationRequest
-	c.BindJSON(&authenticationRequest)
+	authenticationRequest, valid := validateEmailPassword(c)
+	if !valid {
+		return
+	}
+
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte(authenticationRequest.Password), 10)
 
 	data := make([]byte, 10)
@@ -119,6 +144,7 @@ func (h *signupHandler) receive(c *gin.Context) {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, nil)
 	} else {
+		session := sessions.Default(c)
 		session.Set("token", token)
 		session.Save()
 		c.JSON(http.StatusOK, gin.H{"token": token, "email": authenticationRequest.Email})
@@ -126,25 +152,20 @@ func (h *signupHandler) receive(c *gin.Context) {
 }
 
 func (h *signinHandler) receive(c *gin.Context) {
-	session := sessions.Default(c)
-	v := session.Get("token")
-	if v != nil {
-		user, err := h.repo.FindByToken(v.(string))
-		if err != nil || user == nil {
-			c.JSON(http.StatusUnauthorized, nil)
-		} else {
-			c.JSON(http.StatusOK, gin.H{"token": v, "email": user.Email})
-		}
+	if hasToken(c, h.repo) {
 		return
 	}
 
-	var authenticationRequest authenticationRequest
-	c.BindJSON(&authenticationRequest)
+	authenticationRequest, valid := validateEmailPassword(c)
+	if !valid {
+		return
+	}
 
 	user, err := h.repo.FindByEmail(authenticationRequest.Email)
 	if err != nil || user == nil || bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword.String), []byte(authenticationRequest.Password)) != nil {
 		c.JSON(http.StatusUnauthorized, nil)
 	} else {
+		session := sessions.Default(c)
 		session.Set("email", user.Email)
 		session.Set("token", user.Token.String)
 		session.Save()

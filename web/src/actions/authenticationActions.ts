@@ -13,6 +13,13 @@ interface IAuthenticationSuccess extends Action {
   }
 }
 
+interface IAuthenticationSignError extends Action {
+  type: AuthenticationActionTypes.AUTHENTICATION_SIGN_ERROR
+  payload: {
+    signError: Error
+  }
+}
+
 interface IAuthenticationError extends Action {
   type: AuthenticationActionTypes.AUTHENTICATION_ERROR
   payload: {
@@ -32,6 +39,15 @@ const authenticationSuccess = (user: IUser): IAuthenticationSuccess => ({
   type: AuthenticationActionTypes.AUTHENTICATION_SUCCESS,
   payload: {
     user,
+  },
+})
+
+const authenticationSignError = (
+  signError: Error
+): IAuthenticationSignError => ({
+  type: AuthenticationActionTypes.AUTHENTICATION_SIGN_ERROR,
+  payload: {
+    signError,
   },
 })
 
@@ -55,6 +71,7 @@ export const signUp = (authenticationInput: IAuthentication) => {
         dispatch(authenticationSuccess(res.data as IUser))
       })
       .catch((error) => {
+        dispatch(authenticationSignError(error))
         dispatch(authenticationError(error))
       })
   }
@@ -69,6 +86,7 @@ export const signIn = (authenticationInput: IAuthentication) => {
         dispatch(authenticationSuccess(res.data))
       })
       .catch((error) => {
+        dispatch(authenticationSignError(error))
         dispatch(authenticationError(error))
       })
   }
@@ -109,5 +127,6 @@ export const getAuthentication = () => {
 export type AuthenticationAction =
   | IAuthenticationAction
   | IAuthenticationSuccess
+  | IAuthenticationSignError
   | IAuthenticationError
   | IAuthenticationClear

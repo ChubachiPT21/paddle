@@ -1,10 +1,11 @@
 import React, { FC, useState, ChangeEvent } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Input from 'src/components/atoms/Input'
 import PrimaryButton from 'src/components/atoms/PrimaryButton'
 import { signIn, signUp } from 'src/actions/authenticationActions'
 import { IAuthentication } from 'src/type'
 import { AuthType } from 'src/containers/pages/AuthenticationPage'
+import { IUserState } from 'src/reducers/userReducers'
 
 type Props = {
   authType: AuthType
@@ -24,6 +25,9 @@ const AuthenticationForm: FC<Props> = ({ authType }) => {
   }
 
   const title = authType === AuthType.SIGNIN ? 'Sign In' : 'Sign Up'
+  const signError = useSelector(
+    (state: { user: IUserState }) => state.user.signError
+  )
 
   return (
     <div className="sign">
@@ -49,6 +53,9 @@ const AuthenticationForm: FC<Props> = ({ authType }) => {
         />
         <div className="sign__button">
           <PrimaryButton buttonName={title} onClick={onClick} />
+          {signError && (
+            <div className="auth-error">Email or password is invalid</div>
+          )}
         </div>
       </div>
     </div>
